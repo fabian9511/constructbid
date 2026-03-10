@@ -2971,6 +2971,74 @@ function renderCategoriesUI() {
 }
 
 
+function avatarColor(initials) {
+  const colors = ['#f5a623','#3b82f6','#2ecc71','#e8391d','#a855f7','#ec4899','#06b6d4'];
+  let h = 0; for (let c of initials) h += c.charCodeAt(0);
+  return colors[h % colors.length];
+}
+
+function openProposalModal(bidId) {
+  const b = bids.find(x => x.id === bidId);
+  const linkedCo = b?.contactCompanyId ? companies.find(c => c.id === b.contactCompanyId) : companies.find(c => c.name === b?.company);
+  const linkedPerson = linkedCo && b?.contactPersonId
+    ? linkedCo.persons.find(p => p.id === b.contactPersonId)
+    : linkedCo?.persons.find(p => `${p.first} ${p.last}` === b?.contact);
+  document.getElementById('p-project').value = b ? b.name : '';
+  document.getElementById('p-client-company').value = linkedCo?.name || b?.company || '';
+  document.getElementById('p-client-company-email').value = linkedCo?.email || '';
+  document.getElementById('p-client-company-phone').value = linkedCo?.phone || '';
+  document.getElementById('p-client-company-address').value = linkedCo?.address || '';
+  document.getElementById('p-client').value = linkedPerson ? `${linkedPerson.first} ${linkedPerson.last}` : (b?.contact || '');
+  document.getElementById('p-client-email').value = linkedPerson?.email || '';
+  document.getElementById('p-client-phone').value = linkedPerson?.phone || '';
+  document.getElementById('p-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('p-scope').value = b?.notes || '';
+  document.getElementById('p-addendum').value = '0';
+  document.getElementById('p-drawings-date').value = '';
+  document.getElementById('p-quote-valid').value = '';
+  document.getElementById('p-material-until').value = '';
+  document.getElementById('p-footer-note').value = myCompany.email ? `Bid request to be sent at ${myCompany.email}` : '';
+  document.getElementById('p-terms').value = '';
+  document.getElementById('p-quote-num').value = '';
+  catNextId = 1; catLiNextId = 100;
+  proposalCategories = [{ id: catNextId++, name: b ? b.name : 'Base House', taxLabel: '+ GST',
+    items: b && b.value ? [{ id: catLiNextId++, desc: b.name || 'Base scope', qty: 1, price: b.value }] : [] }];
+  document.getElementById('proposal-modal-title').textContent = 'Proposal Builder';
+  document.getElementById('proposal-modal-sub').textContent = b ? `For: ${b.name}` : '';
+  const banner = document.getElementById('proposal-bid-banner');
+  const bannerText = document.getElementById('proposal-bid-banner-text');
+  if (b) { banner.style.display = 'flex'; bannerText.textContent = `Pre-filled from bid · ${b.contact}${b.company ? ' · ' + b.company : ''}`; }
+  else { banner.style.display = 'none'; }
+  renderCategoriesUI(); updatePreview();
+  document.getElementById('p2-inclusions').value = myCompany.inclusions;
+  document.getElementById('p2-exclusions').value = myCompany.exclusions;
+  document.getElementById('p2-hourly').value = myCompany.hourlyRates;
+  document.getElementById('p2-terms').value = myCompany.termsAndConditions;
+  switchProposalPage(1);
+  document.getElementById('proposal-modal').classList.add('open');
+}
+
+function closeProposalModal() {
+  document.getElementById('proposal-modal').classList.remove('open');
+  const panel = document.getElementById('saved-quotes-panel');
+  if (panel) panel.style.display = 'none';
+}
+
+document.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+    const modal = document.getElementById('proposal-modal');
+    if (modal && modal.classList.contains('open')) { e.preventDefault(); saveCurrentQuote(); }
+  }
+});
+
+function getStats() {
+  const est = bids.filter(b => b.status === 'estimating');
+  const pend = bids.filter(b => b.status === 'pending');
+  const won = bids.filter(b => b.status === 'won');
+  const lost = bids.filter(b => b.status === 'lost');
+  return { est, pend, won, lost };
+}
+
 // ============ DASHBOARD ============
 function renderDashboard() {
   const s = getStats();
