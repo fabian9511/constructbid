@@ -178,6 +178,7 @@
 
   .btn-sm { padding: 5px 10px; font-size: 12px; }
 
+
   /* CONTENT */
   .content { padding: 28px 32px; }
 
@@ -2815,6 +2816,131 @@ function showYearBids(year, status) {
   panel.style.display = 'block';
   panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
+// ============ PROPOSAL MODAL ============
+function openProposalModal(bidId) {
+  const b = bids.find(x => x.id === bidId);
+  currentProposalBidId = bidId;
+
+  // Check for a previously saved quote for this bid
+  const savedQuotes = getSavedQuotes();
+  const existingQuote = savedQuotes.find(q => q.bidId === bidId);
+  
+  if (existingQuote) {
+    // Load the saved quote
+    loadQuoteFormState(existingQuote);
+    
+    // Modal title
+    document.getElementById('proposal-modal-title').textContent = 'Proposal Builder';
+    document.getElementById('proposal-modal-sub').textContent = b ? `For: ${b.name}` : '';
+    
+    // Show banner
+    const banner = document.getElementById('proposal-bid-banner');
+    const bannerText = document.getElementById('proposal-bid-banner-text');
+    if (b) {
+      banner.style.display = 'flex';
+      bannerText.textContent = `Loaded saved quote · ${existingQuote.quoteNum || b.name}`;
+    }
+    
+    switchProposalPage(1);
+    document.getElementById('proposal-modal').classList.add('open');
+    showToast('Loaded saved quote');
+    return;
+  }
+
+  // No saved quote — start fresh from bid data
+  const linkedCo = b?.contactCompanyId ? companies.find(c => c.id === b.contactCompanyId) : companies.find(c => c.name === b?.company);
+  const linkedPerson = linkedCo && b?.contactPersonId
+    ? linkedCo.persons.find(p => p.id === b.contactPersonId)
+    : linkedCo?.persons.find(p => `${p.first} ${p.last}` === b?.contact);
+
+  // If no linked person found by ID, try matching by contact_name on the bid
+  const fallbackPerson = !linkedPerson && linkedCo ? linkedCo.persons.find(p => `${p.first} ${p.last}` === b?.contact_name) : null;
+  const person = linkedPerson || fallbackPerson || (linkedCo?.persons?.length === 1 ? linkedCo.persons[0] : null);
+
+  // Pre-fill from bid + linked contact data
+  document.getElementById('p-project').value = b ? b.name : '';
+  document.getElementById('p-client-company').value = linkedCo?.name || b?.company || '';
+  // Company email/phone/address: use company data first, fall back to contact person data
+  document.getElementById('p-client-company-email').value = linkedCo?.email || person?.email || '';
+  document.getElementById('p-client-company-phone').value = linkedCo?.phone || person?.phone || '';
+  document.getElementById('p-client-company-address').value = linkedCo?.address || '';
+  document.getElementById('p-client').value = person ? `${person.first} ${person.last}` : (b?.contact || b?.contact_name || '');
+  document.getElementById('p-client-email').value = person?.email || '';
+  document.getElementById('p-client-phone').value = person?.phone || '';
+  document.getElementById('p-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('p-scope').value = b?.notes || '';
+  document.getElementById('p-addendum').value = '0';
+  document.getElementById('p-drawings-date').value = '';
+  document.getElementById('p-quote-valid').value = '';
+  document.getElementById('p-material-until').value = '';
+  document.getElementById('p-footer-note').value = myCompany.email ? `Bid request to be sent at ${myCompany.email}` : '';
+  document.getElementById('p-terms').value = '';
+  document.getElementById('p-quote-num').value = '';
+
+  // Seed a default category from bid value if available
+  catNextId = 1;
+  catLiNextId = 100;
+  proposalCategories = [
+    {
+      id: catNextId++,
+      name: b ? b.name : 'Base House',
+      description: '',
+      taxLabel: '+ GST',
+      items: b && b.value ? [{ id: catLiNextId++, desc: b.name || 'Base scope', qty: 1, price: b.value }] : []
+    }
+  ];
+
+  // Modal title
+  document.getElementById('proposal-modal-title').textContent = 'Proposal Builder';
+  document.getElementById('proposal-modal-sub').textContent = b ? `For: ${b.name}` : '';
+
+  // Show banner
+  const banner = document.getElementById('proposal-bid-banner');
+  const bannerText = document.getElementById('proposal-bid-banner-text');
+  if (b) {
+    banner.style.display = 'flex';
+    bannerText.textContent = `Pre-filled from bid · ${b.contact}${b.company ? ' · ' + b.company : ''}`;
+  } else {
+    banner.style.display = 'none';
+  }
+
+  renderCategoriesUI();
+  updatePreview();
+
+  // Reset page 2 from company defaults
+  document.getElementById('p2-inclusions').value = myCompany.inclusions;
+  document.getElementById('p2-exclusions').value = myCompany.exclusions;
+  document.getElementById('p2-hourly').value = myCompany.hourlyRates;
+  document.getElementById('p2-terms').value = myCompany.termsAndConditions;
+
+  // Always open on page 1
+  switchProposalPage(1);
+  document.getElementById('proposal-modal').classList.add('open');
+}
+
+function closeProposalModal() {
+  document.getElementById('proposal-modal').classList.remove('open');
+}
+
+// Ctrl+S saves quote while modal is open
+document.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+    const modal = document.getElementById('proposal-modal');
+    if (modal && modal.classList.contains('open')) {
+      e.preventDefault();
+      saveCurrentQuote();
+    }
+  }
+});
+
+// ============ STATS ============
+function getStats() {
+  const est = bids.filter(b => b.status === 'estimating');
+  const pend = bids.filter(b => b.status === 'pending');
+  const won = bids.filter(b => b.status === 'won');
+  const lost = bids.filter(b => b.status === 'lost');
+  return { est, pend, won, lost };
+}
 
 function fmt(n) {
   if (!n) return '$0';
@@ -2824,11 +2950,12 @@ function fmt(n) {
 }
 
 function fmtFull(n) {
-  return '$' + (n || 0).toLocaleString();
+  return '$' + (n || 0).toLocaleString('en', {minimumFractionDigits:2, maximumFractionDigits:2});
 }
 
 // ============ PROPOSAL BUILDER — Category + Line Items ============
 let catNextId = 1;
+let currentProposalBidId = null;
 let catLiNextId = 100;
 
 // Each category: { id, name, taxLabel, items: [{id, desc, qty, price}] }
@@ -2836,13 +2963,13 @@ let proposalCategories = [];
 
 function initCategoriesUI() {
   proposalCategories = [
-    { id: catNextId++, name: 'Base House', taxLabel: '+ GST', items: [] }
+    { id: catNextId++, name: 'Base House', description: '', taxLabel: '+ GST', items: [] }
   ];
   renderCategoriesUI();
 }
 
 function addCategory() {
-  proposalCategories.push({ id: catNextId++, name: '', taxLabel: '+ GST', items: [] });
+  proposalCategories.push({ id: catNextId++, name: '', description: '', taxLabel: '+ GST', items: [] });
   renderCategoriesUI();
   updatePreview();
 }
@@ -2907,11 +3034,11 @@ function renderCategoryItems(catId) {
   el.innerHTML = cat.items.map(li => `
     <div class="p-cat-line-item">
       <input type="text" value="${li.desc.replace(/"/g,'&quot;')}" class="form-input" style="background:transparent;border:none;padding:0;font-size:12px;" placeholder="Item description"
-        onchange="updateCatLI(${catId},${li.id},'desc',this.value)">
+        oninput="updateCatLI(${catId},${li.id},'desc',this.value)">
       <input type="number" value="${li.qty}" class="form-input" style="background:transparent;border:none;padding:0;font-size:12px;text-align:center;color:var(--muted);" placeholder="Qty"
-        onchange="updateCatLI(${catId},${li.id},'qty',parseFloat(this.value)||1)">
+        oninput="updateCatLI(${catId},${li.id},'qty',parseFloat(this.value)||1)">
       <input type="number" value="${li.price}" class="form-input" style="background:transparent;border:none;padding:0;font-size:12px;text-align:right;color:var(--accent);font-family:'DM Mono',monospace;" placeholder="Unit $"
-        onchange="updateCatLI(${catId},${li.id},'price',parseFloat(this.value)||0)">
+        oninput="updateCatLI(${catId},${li.id},'price',parseFloat(this.value)||0)">
       <span class="p-cat-li-del" onclick="removeCatLI(${catId},${li.id})">✕</span>
     </div>
   `).join('');
@@ -2930,7 +3057,7 @@ function renderCategoriesUI() {
       <div class="p-category" id="cat-block-${cat.id}">
         <div class="p-category-header" onclick="toggleCategory(${cat.id})">
           <span class="p-category-chevron">▼</span>
-          <input class="p-category-name-input" type="text" value="${cat.name.replace(/"/g,'&quot;')}" placeholder="Category name (e.g. Base House)"
+          <input class="p-category-name-input" type="text" value="${cat.name.replace(/"/g,'&quot;')}" placeholder="Category name (e.g. Drywall & Taping)"
             onclick="event.stopPropagation()"
             oninput="updateCatField(${cat.id},'name',this.value)">
           <span class="p-category-total" id="cat-total-${cat.id}">${total ? fmtFull(total) : ''}</span>
@@ -2938,6 +3065,12 @@ function renderCategoriesUI() {
             onclick="event.stopPropagation();removeCategory(${cat.id})">✕</button>
         </div>
         <div class="p-category-body">
+          <div class="form-group" style="margin-bottom:10px;">
+            <label class="form-label">Category Scope / Description</label>
+            <textarea class="form-textarea" rows="4" placeholder="Describe the scope for this category...&#10;e.g.&#10;• 5/8&quot; Standard drywall to exterior walls – One layer&#10;• 1/2&quot; Standard drywall to interior partitions&#10;• All exposed drywall taped and sanded to level 4 finish"
+              style="font-size:12px;line-height:1.5;"
+              oninput="updateCatField(${cat.id},'description',this.value)">${(cat.description||'').replace(/</g,'&lt;')}</textarea>
+          </div>
           <div class="p-category-meta">
             <div class="form-group">
               <label class="form-label">Tax Label</label>
@@ -2971,74 +3104,6 @@ function renderCategoriesUI() {
 }
 
 
-function avatarColor(initials) {
-  const colors = ['#f5a623','#3b82f6','#2ecc71','#e8391d','#a855f7','#ec4899','#06b6d4'];
-  let h = 0; for (let c of initials) h += c.charCodeAt(0);
-  return colors[h % colors.length];
-}
-
-function openProposalModal(bidId) {
-  const b = bids.find(x => x.id === bidId);
-  const linkedCo = b?.contactCompanyId ? companies.find(c => c.id === b.contactCompanyId) : companies.find(c => c.name === b?.company);
-  const linkedPerson = linkedCo && b?.contactPersonId
-    ? linkedCo.persons.find(p => p.id === b.contactPersonId)
-    : linkedCo?.persons.find(p => `${p.first} ${p.last}` === b?.contact);
-  document.getElementById('p-project').value = b ? b.name : '';
-  document.getElementById('p-client-company').value = linkedCo?.name || b?.company || '';
-  document.getElementById('p-client-company-email').value = linkedCo?.email || '';
-  document.getElementById('p-client-company-phone').value = linkedCo?.phone || '';
-  document.getElementById('p-client-company-address').value = linkedCo?.address || '';
-  document.getElementById('p-client').value = linkedPerson ? `${linkedPerson.first} ${linkedPerson.last}` : (b?.contact || '');
-  document.getElementById('p-client-email').value = linkedPerson?.email || '';
-  document.getElementById('p-client-phone').value = linkedPerson?.phone || '';
-  document.getElementById('p-date').value = new Date().toISOString().split('T')[0];
-  document.getElementById('p-scope').value = b?.notes || '';
-  document.getElementById('p-addendum').value = '0';
-  document.getElementById('p-drawings-date').value = '';
-  document.getElementById('p-quote-valid').value = '';
-  document.getElementById('p-material-until').value = '';
-  document.getElementById('p-footer-note').value = myCompany.email ? `Bid request to be sent at ${myCompany.email}` : '';
-  document.getElementById('p-terms').value = '';
-  document.getElementById('p-quote-num').value = '';
-  catNextId = 1; catLiNextId = 100;
-  proposalCategories = [{ id: catNextId++, name: b ? b.name : 'Base House', taxLabel: '+ GST',
-    items: b && b.value ? [{ id: catLiNextId++, desc: b.name || 'Base scope', qty: 1, price: b.value }] : [] }];
-  document.getElementById('proposal-modal-title').textContent = 'Proposal Builder';
-  document.getElementById('proposal-modal-sub').textContent = b ? `For: ${b.name}` : '';
-  const banner = document.getElementById('proposal-bid-banner');
-  const bannerText = document.getElementById('proposal-bid-banner-text');
-  if (b) { banner.style.display = 'flex'; bannerText.textContent = `Pre-filled from bid · ${b.contact}${b.company ? ' · ' + b.company : ''}`; }
-  else { banner.style.display = 'none'; }
-  renderCategoriesUI(); updatePreview();
-  document.getElementById('p2-inclusions').value = myCompany.inclusions;
-  document.getElementById('p2-exclusions').value = myCompany.exclusions;
-  document.getElementById('p2-hourly').value = myCompany.hourlyRates;
-  document.getElementById('p2-terms').value = myCompany.termsAndConditions;
-  switchProposalPage(1);
-  document.getElementById('proposal-modal').classList.add('open');
-}
-
-function closeProposalModal() {
-  document.getElementById('proposal-modal').classList.remove('open');
-  const panel = document.getElementById('saved-quotes-panel');
-  if (panel) panel.style.display = 'none';
-}
-
-document.addEventListener('keydown', function(e) {
-  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-    const modal = document.getElementById('proposal-modal');
-    if (modal && modal.classList.contains('open')) { e.preventDefault(); saveCurrentQuote(); }
-  }
-});
-
-function getStats() {
-  const est = bids.filter(b => b.status === 'estimating');
-  const pend = bids.filter(b => b.status === 'pending');
-  const won = bids.filter(b => b.status === 'won');
-  const lost = bids.filter(b => b.status === 'lost');
-  return { est, pend, won, lost };
-}
-
 // ============ DASHBOARD ============
 function renderDashboard() {
   const s = getStats();
@@ -3068,8 +3133,13 @@ function renderDashboard() {
     </div>
   `;
 
-  const recent = [...bids].sort((a, b) => b.id - a.id).slice(0, 5);
-  document.getElementById('dashboard-table').innerHTML = buildTable(recent);
+  const estBids = bids.filter(b => b.status === 'estimating').sort((a, b) => {
+    if (a.due && b.due) return a.due.localeCompare(b.due);
+    if (a.due) return -1;
+    if (b.due) return 1;
+    return b.id - a.id;
+  });
+  document.getElementById('dashboard-table').innerHTML = buildTable(estBids);
 }
 
 // ============ BIDS TABLE ============
@@ -4406,6 +4476,7 @@ function updatePreview2() {
   const hourly     = document.getElementById('p2-hourly')?.value || '';
   const terms2     = document.getElementById('p2-terms')?.value || '';
   const project    = document.getElementById('p-project')?.value || '';
+  const quoteValid = document.getElementById('p-quote-valid')?.value || '45';
   const toList = (t) => t.split('\n').map(l=>l.trim()).filter(Boolean);
   const incItems  = toList(inclusions);
   const excItems  = toList(exclusions);
@@ -4438,7 +4509,7 @@ function updatePreview2() {
   const hasAny = incItems.length || excItems.length || rateItems.length || termItems.length;
 
   const logoHtml = myCompany.logoDataUrl
-    ? `<img src="${myCompany.logoDataUrl}" style="height:44px;max-width:70px;object-fit:contain;display:block;flex-shrink:0;">`
+    ? `<img src="${myCompany.logoDataUrl}" style="height:110px;max-width:160px;object-fit:contain;display:block;flex-shrink:0;">`
     : ``;
 
   document.getElementById('preview-doc-2').innerHTML = `
@@ -4517,7 +4588,7 @@ function updatePreview2() {
 
       ${rateItems.length ? `
       <div class="p2-pay">
-        <strong>Payment Terms:</strong> NET 30 days from invoice date. A service charge of <strong>2% per month (24% per annum)</strong> will be applied to all overdue amounts. All prices are exclusive of GST. Quote valid for <strong>45 days</strong> from issue date.
+        <strong>Payment Terms:</strong> NET 30 days from invoice date. A service charge of <strong>2% per month (24% per annum)</strong> will be applied to all overdue amounts. All prices are exclusive of GST. Quote valid for <strong>${quoteValid || '45'} days</strong> from issue date.
       </div>` : ''}
 
       ${tcRows.length ? `
@@ -4605,7 +4676,7 @@ function updatePreview() {
 
   // ── Logo / company block ──────────────────────────────────
   const logoHtml = myCompany.logoDataUrl
-    ? `<img src="${myCompany.logoDataUrl}" style="height:52px;max-width:80px;object-fit:contain;display:block;flex-shrink:0;">`
+    ? `<img src="${myCompany.logoDataUrl}" style="height:110px;max-width:160px;object-fit:contain;display:block;flex-shrink:0;">`
     : ``;
 
   // ── Scope / pricing HTML ──────────────────────────────────
@@ -4617,18 +4688,21 @@ function updatePreview() {
 
     if (!showItems) {
       return `
-        <div style="display:flex;align-items:baseline;justify-content:space-between;padding:7px 0;border-bottom:1px solid #eee;">
-          <div style="font-size:9.5pt;font-weight:700;color:#1a1a1a;text-transform:uppercase;letter-spacing:0.5px;">${cat.name || 'Category ' + (ci+1)}</div>
-          <div style="font-size:9.5pt;font-weight:700;color:#1a1a1a;font-family:monospace;">${catTotal ? fmtFull(catTotal) + (taxStr ? ' ' + taxStr : '') : '—'}</div>
+        <div style="padding:7px 0;border-bottom:1px solid #eee;">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;">
+            <div style="font-size:9.5pt;font-weight:700;color:#1a1a1a;text-transform:uppercase;letter-spacing:0.5px;">${cat.name || 'Category ' + (ci+1)}</div>
+          </div>
+          ${cat.description ? `<div style="font-size:8pt;color:#555;margin-top:4px;line-height:1.5;white-space:pre-line;">${cat.description}</div>` : ''}
         </div>`;
     }
 
     return `
       <div style="margin-bottom:14px;page-break-inside:avoid;">
-        <div style="background:#e8f0fa;border-left:3px solid #0066cc;padding:4px 10px;font-size:8.5pt;font-weight:700;color:#004499;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center;">
+        <div style="background:#e8f0fa;border-left:3px solid #0066cc;padding:4px 10px;font-size:8.5pt;font-weight:700;color:#004499;margin-bottom:0;display:flex;justify-content:space-between;align-items:center;">
           <span>${cat.name || 'Category ' + (ci+1)}</span>
           ${catTotal ? `<span style="font-family:monospace;">${fmtFull(catTotal)}${taxStr ? ' ' + taxStr : ''}</span>` : ''}
         </div>
+        ${cat.description ? `<div style="background:#f8fafc;border-left:3px solid #0066cc;padding:6px 10px;font-size:8pt;color:#444;line-height:1.6;white-space:pre-line;border-bottom:1px solid #e0e8f0;">${cat.description}</div>` : ''}
         ${hasItems ? `
         <table style="width:100%;border-collapse:collapse;font-size:8.5pt;">
           <thead>
@@ -4760,8 +4834,8 @@ function updatePreview() {
 
 function getQuoteFormState() {
   return {
+    bidId:         currentProposalBidId,
     quoteNum:      document.getElementById('p-quote-num')?.value || '',
-    quoteLabel:    document.getElementById('p-quote-label')?.value || '',
     client:        document.getElementById('p-client')?.value || '',
     clientEmail:   document.getElementById('p-client-email')?.value || '',
     clientPhone:   document.getElementById('p-client-phone')?.value || '',
@@ -4791,7 +4865,6 @@ function getQuoteFormState() {
 function loadQuoteFormState(q) {
   const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
   set('p-quote-num',              q.quoteNum || '');
-  set('p-quote-label',            q.quoteLabel || '');
   set('p-client',                 q.client || '');
   set('p-client-email',           q.clientEmail || '');
   set('p-client-phone',           q.clientPhone || '');
@@ -4839,85 +4912,37 @@ function setSavedQuotes(arr) {
 
 function saveCurrentQuote() {
   const state = getQuoteFormState();
-  const label = state.quoteLabel || state.quoteNum || state.project || 'Untitled Quote';
-  if (!state.project && !state.quoteNum && !state.quoteLabel) {
+  const label = state.quoteNum || state.project || 'Untitled Quote';
+  if (!state.project && !state.quoteNum) {
     showToast('Add a project name or quote # before saving');
     return;
   }
   const quotes = getSavedQuotes();
-  // Replace existing if same quoteNum, else push
-  const idx = state.quoteNum ? quotes.findIndex(q => q.quoteNum === state.quoteNum) : -1;
+  // Replace existing if same bidId or quoteNum, else push
+  const idx = state.bidId ? quotes.findIndex(q => q.bidId === state.bidId) :
+              (state.quoteNum ? quotes.findIndex(q => q.quoteNum === state.quoteNum) : -1);
   if (idx >= 0) {
     quotes[idx] = state;
-    showToast(`Quote "${label}" updated`);
   } else {
     quotes.unshift(state);
-    showToast(`Quote "${label}" saved`);
   }
   setSavedQuotes(quotes);
-  renderSavedQuotesList();
-}
-
-function deleteQuote(idx) {
-  const quotes = getSavedQuotes();
-  const label  = quotes[idx]?.quoteLabel || quotes[idx]?.quoteNum || quotes[idx]?.project || 'Quote';
-  quotes.splice(idx, 1);
-  setSavedQuotes(quotes);
-  renderSavedQuotesList();
-  showToast(`"${label}" deleted`);
-}
-
-function loadQuote(idx) {
-  const quotes = getSavedQuotes();
-  const q = quotes[idx];
-  if (!q) return;
-  loadQuoteFormState(q);
-  toggleSavedQuotesPanel();
-  showToast(`Loaded: ${q.quoteLabel || q.quoteNum || q.project}`);
-}
-
-function toggleSavedQuotesPanel() {
-  const panel = document.getElementById('saved-quotes-panel');
-  const isOpen = panel.style.display !== 'none' && panel.style.display !== '';
-  panel.style.display = isOpen ? 'none' : 'flex';
-  panel.style.flexDirection = 'column';
-  if (!isOpen) renderSavedQuotesList();
-}
-
-function renderSavedQuotesList() {
-  const el = document.getElementById('saved-quotes-list');
-  if (!el) return;
-  const quotes = getSavedQuotes();
-  if (!quotes.length) {
-    el.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--muted);font-size:12px;">
-      <div style="font-size:28px;margin-bottom:10px;">📋</div>
-      No saved quotes yet.<br>Fill out the form and click <strong>Save Quote</strong>.
-    </div>`;
-    return;
+  showToast(`Quote "${label}" saved ✓`);
+  
+  // Also sync to Supabase if available
+  if (typeof supabase !== 'undefined' && supabase) {
+    const uid = supabase.auth?.getUser?.()?.then?.(r => r?.data?.user?.id);
+    if (uid) uid.then(id => {
+      if (!id) return;
+      supabase.from('saved_quotes').upsert({
+        user_id: id,
+        bid_id: state.bidId || null,
+        quote_num: state.quoteNum || null,
+        data: state,
+        updated_at: new Date().toISOString(),
+      }, { onConflict: 'user_id,bid_id' }).then(() => {});
+    });
   }
-  el.innerHTML = quotes.map((q, i) => {
-    const label    = q.quoteLabel || q.quoteNum || q.project || 'Untitled Quote';
-    const subLabel = [q.quoteNum, q.project].filter(Boolean).join(' · ');
-    const client   = q.clientCompany || q.client || '—';
-    const savedAt  = q.savedAt ? new Date(q.savedAt).toLocaleDateString('en-CA', {month:'short',day:'numeric',year:'numeric'}) : '';
-    const total    = (q.categories || []).reduce((a,c) => a + c.items.reduce((b,li) => b+(li.qty*li.price),0), 0);
-    return `
-      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:10px;">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
-          <div style="font-size:13px;font-weight:700;color:var(--text);line-height:1.3;flex:1;margin-right:8px;">${label}</div>
-          <div style="display:flex;gap:4px;flex-shrink:0;">
-            <button onclick="loadQuote(${i})" style="background:var(--accent);color:#000;border:none;border-radius:4px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;">Load</button>
-            <button onclick="deleteQuote(${i})" style="background:transparent;color:var(--lost);border:1px solid var(--border);border-radius:4px;padding:4px 8px;font-size:11px;cursor:pointer;">✕</button>
-          </div>
-        </div>
-        ${subLabel ? `<div style="font-size:10px;color:var(--muted);margin-bottom:3px;">${subLabel}</div>` : ''}
-        <div style="display:flex;gap:12px;font-size:11px;color:var(--muted);">
-          <span>🏢 ${client}</span>
-          ${total ? `<span style="color:var(--accent);font-weight:600;">$${total.toLocaleString()}</span>` : ''}
-          ${savedAt ? `<span>💾 ${savedAt}</span>` : ''}
-        </div>
-      </div>`;
-  }).join('');
 }
 
 // ── Export PDF — uses Blob + hidden iframe print ────────────────────────
@@ -4925,114 +4950,63 @@ function exportProposalPDF() {
   updatePreview();
   updatePreview2();
 
-  const page1Html = document.getElementById('preview-doc').innerHTML;
-  const page2Html = document.getElementById('preview-doc-2').innerHTML;
+  var page1Html = document.getElementById('preview-doc').innerHTML;
+  var page2Html = document.getElementById('preview-doc-2').innerHTML;
 
-  const p2Inclusions = document.getElementById('p2-inclusions')?.value || '';
-  const p2Exclusions = document.getElementById('p2-exclusions')?.value || '';
-  const p2Hourly     = document.getElementById('p2-hourly')?.value || '';
-  const p2Terms      = document.getElementById('p2-terms')?.value || '';
-  const hasPage2     = p2Inclusions || p2Exclusions || p2Hourly || p2Terms;
+  var p2i = document.getElementById('p2-inclusions')?.value || '';
+  var p2e = document.getElementById('p2-exclusions')?.value || '';
+  var p2h = document.getElementById('p2-hourly')?.value || '';
+  var p2t = document.getElementById('p2-terms')?.value || '';
+  var hasPage2 = p2i || p2e || p2h || p2t;
 
-  const projName = document.getElementById('p-project')?.value || 'Quote';
-  const quoteNum = document.getElementById('p-quote-num')?.value || '';
-  const fileName = [quoteNum, projName].filter(Boolean).join(' — ') + '.pdf';
+  var projName = document.getElementById('p-project')?.value || 'Quote';
+  var quoteNum = document.getElementById('p-quote-num')?.value || '';
+  var fileName = [quoteNum, projName].filter(Boolean).join(' \u2014 ');
 
-  const printCSS = `
+  var printCSS = `
     * { box-sizing:border-box; margin:0; padding:0; }
-    @page { size: letter portrait; margin: 12mm 14mm; }
+    @page { size: letter portrait; margin: 10mm 12mm; }
     body {
       font-family: Arial, Helvetica, sans-serif;
       font-size: 9pt;
       color: #1a1a1a;
       background: #fff;
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
     }
-    .print-page { width:100%; page-break-after:always; break-after:page; }
-    .print-page:last-child { page-break-after:auto; break-after:auto; }
-    [style*="background:#f0f6ff"]  { background:#f0f6ff  !important; }
-    [style*="background:#e8f0fa"]  { background:#e8f0fa  !important; }
-    [style*="background:#f0f0f0"]  { background:#f0f0f0  !important; }
-    [style*="background:#f5f5f5"]  { background:#f5f5f5  !important; }
-    [style*="background:#fafafa"]  { background:#fafafa  !important; }
-    [style*="background:#fff8e1"]  { background:#fff8e1  !important; }
-    [style*="background:#1a1a1a"]  { background:#1a1a1a  !important; }
-    [style*="background:#2d6a2d"]  { background:#2d6a2d  !important; }
-    [style*="background:#8b2000"]  { background:#8b2000  !important; }
-    [style*="background:linear-gradient"] { background:linear-gradient(90deg,#0066cc,#004499) !important; }
+    .print-page { width:100%; padding: 5mm 0; }
+    .print-page + .print-page { page-break-before:always; break-before:page; }
+    [style*="background"] { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     table { border-collapse:collapse; }
     img { max-width:100%; }
   `;
 
-  const fullHtml = `<!DOCTYPE html>
-<html><head>
-<meta charset="UTF-8">
-<title>${fileName}</title>
-<style>${printCSS}</style>
-</head>
-<body>
-  <div class="print-page">${page1Html}</div>
-  ${hasPage2 ? `<div class="print-page">${page2Html}</div>` : ''}
-</body></html>`;
+  var fullHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' + fileName + '</title><style>' + printCSS + '</style></head><body>';
+  fullHtml += '<div class="print-page">' + page1Html + '</div>';
+  if (hasPage2) fullHtml += '<div class="print-page">' + page2Html + '</div>';
+  fullHtml += '<scr' + 'ipt>document.title="' + fileName.replace(/"/g,'\\"') + '"; window.onafterprint=function(){window.close();}; setTimeout(function(){window.print();},500);</scr' + 'ipt>';
+  fullHtml += '</body></html>';
 
-  // Open as data URL in new tab (works in sandboxed environments)
-  // User then does Ctrl+P / Cmd+P → Save as PDF
-  const encoded = 'data:text/html;charset=utf-8,' + encodeURIComponent(fullHtml);
-  const newTab  = window.open(encoded, '_blank');
+  var blob = new Blob([fullHtml], { type: 'text/html' });
+  var url = URL.createObjectURL(blob);
+  var w = window.open(url, '_blank');
 
-  if (!newTab) {
-    // Popup blocked — fall back to inline preview modal
-    showPDFPreviewModal(fullHtml, fileName);
+  if (!w) {
+    // Popup blocked - try iframe approach
+    var iframe = document.createElement('iframe');
+    iframe.style.cssText = 'position:fixed;left:-9999px;width:0;height:0;';
+    iframe.srcdoc = fullHtml;
+    document.body.appendChild(iframe);
+    iframe.onload = function() {
+      try { iframe.contentWindow.print(); } catch(e) { console.error(e); }
+      setTimeout(function() { document.body.removeChild(iframe); }, 2000);
+    };
+    showToast('Print dialog opening...');
   } else {
-    showToast('Opened in new tab — press Ctrl+P to Save as PDF');
+    showToast('Print dialog opening \u2014 choose "Save as PDF" as the printer');
   }
 }
-
-// Fallback modal if popup is blocked
-function showPDFPreviewModal(html, fileName) {
-  // Remove any existing PDF modal
-  const existing = document.getElementById('pdf-preview-modal');
-  if (existing) existing.remove();
-
-  const modal = document.createElement('div');
-  modal.id = 'pdf-preview-modal';
-  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:20px;gap:12px;';
-
-  modal.innerHTML = `
-    <div style="display:flex;align-items:center;gap:12px;width:100%;max-width:900px;flex-shrink:0;">
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:#f5a623;flex:1;">PDF Preview — ${fileName}</div>
-      <button onclick="
-        const a=document.createElement('a');
-        a.href='data:text/html;charset=utf-8,'+encodeURIComponent(document.getElementById('pdf-iframe').srcdoc||'');
-        a.download='${fileName.replace(/'/g,"\'")}';
-        a.click();"
-        style="background:#f5a623;color:#000;border:none;border-radius:5px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer;">
-        ⬇ Download HTML
-      </button>
-      <button onclick="document.getElementById('pdf-preview-modal').remove();"
-        style="background:transparent;color:#fff;border:1px solid #555;border-radius:5px;padding:8px 14px;font-size:13px;cursor:pointer;">
-        ✕ Close
-      </button>
-    </div>
-    <div style="width:100%;max-width:900px;flex:1;background:#fff;border-radius:6px;overflow:hidden;">
-      <iframe id="pdf-iframe" style="width:100%;height:100%;border:none;"></iframe>
-    </div>
-    <div style="font-size:11px;color:#aaa;">Popup was blocked. Use the Download HTML button, open the file, then Ctrl+P → Save as PDF.</div>
-  `;
-
-  document.body.appendChild(modal);
-
-  // Write the HTML into the iframe
-  const iframe = document.getElementById('pdf-iframe');
-  const doc = iframe.contentDocument || iframe.contentWindow.document;
-  doc.open();
-  doc.write(html);
-  doc.close();
-}
-
-// Legacy alias
-function printProposal() { exportProposalPDF(); }
 
 // ============ PROGRESS BILLING ============
 let claimLines = [];
@@ -6581,6 +6555,13 @@ function exportCOPDF(coId) {
   if (w) showToast(ref + ' — Print dialog opening');
   else showToast('Popup blocked — please allow popups');
 }
+
+// Legacy alias
+function printProposal() { exportProposalPDF(); }
+
+
+
+
 // ============ TOAST ============
 function showToast(msg) {
   const t = document.getElementById('toast');
