@@ -3219,6 +3219,7 @@ function buildTable(rows) {
                 <span class="status-dot" style="background:${b.status==='estimating'?'var(--estimating)':b.status==='pending'?'var(--pending)':b.status==='won'?'var(--won)':'var(--lost)'};"></span>
               </div>
             </td>
+            <td class="value-cell">${b.value ? fmtFull(b.value) : '—'}</td>
             <td>
               <div class="row-team">
                 ${avatarHtml}
