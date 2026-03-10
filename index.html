@@ -4367,6 +4367,32 @@ function exportCOPDF(coId) {
 // Legacy alias
 function printProposal() { exportProposalPDF(); }
 
+function exportProposalPDF() {
+  updatePreview();
+  updatePreview2();
+
+  var page1Html = document.getElementById('preview-doc').innerHTML;
+  var page2Html = document.getElementById('preview-doc-page2').innerHTML;
+
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Proposal</title>' +
+    '<style>@page{size:letter;margin:0;}*{box-sizing:border-box;margin:0;padding:0;}body{font-family:"Segoe UI",Arial,sans-serif;background:#fff;color:#1a1a1a;-webkit-print-color-adjust:exact;print-color-adjust:exact;}.page-break{page-break-before:always;}</style>' +
+    '</head><body>' +
+    '<div style="width:8.5in;min-height:11in;padding:0.5in;margin:0 auto;">' + page1Html + '</div>' +
+    '<div class="page-break"></div>' +
+    '<div style="width:8.5in;min-height:11in;padding:0.5in;margin:0 auto;">' + page2Html + '</div>' +
+    '<scr' + 'ipt>document.title="Proposal";window.onafterprint=function(){window.close();};setTimeout(function(){window.print();},500);<\/scr' + 'ipt>' +
+    '</body></html>';
+
+  var blob = new Blob([html], { type: 'text/html' });
+  var url = URL.createObjectURL(blob);
+  var w = window.open(url, '_blank');
+  if (w) {
+    showToast('Print dialog opening — choose "Save as PDF" as the printer');
+  } else {
+    showToast('Popup blocked — please allow popups');
+  }
+}
+
 
 
 
