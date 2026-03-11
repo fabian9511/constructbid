@@ -1212,6 +1212,9 @@
       <div class="nav-item" onclick="showPage('billing')">
         <span class="nav-icon">💰</span> Progress Billing
       </div>
+      <div class="nav-item" onclick="showPage('resi')">
+        <span class="nav-icon">🏠</span> Resi Schedule
+      </div>
       <div class="nav-item" onclick="showPage('equipment')">
         <span class="nav-icon">🏗️</span> Equipment
       </div>
@@ -1505,18 +1508,12 @@
     <div id="page-billing" class="page">
       <div class="topbar">
         <div class="page-title">Progress Billing</div>
-        <div class="topbar-actions" id="billing-topbar-actions">
+        <div class="topbar-actions">
           <button class="btn btn-primary" onclick="saveClaimToDB()" style="font-size:12px;">💾 Save Claim</button>
           <button class="btn btn-ghost" onclick="exportClaimPDF()" style="font-size:12px;">⬇ Export PDF</button>
         </div>
       </div>
-      <!-- Sub-tabs -->
-      <div style="display:flex;background:var(--surface2);border-bottom:1px solid var(--border);flex-shrink:0;">
-        <div id="billing-tab-claims" onclick="switchBillingTab('claims')" style="padding:10px 24px;font-size:12px;font-weight:600;cursor:pointer;border-bottom:2px solid var(--accent);color:var(--accent);letter-spacing:0.5px;transition:all 0.15s;">Progress Claims</div>
-        <div id="billing-tab-resi" onclick="switchBillingTab('resi')" style="padding:10px 24px;font-size:12px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;color:var(--muted);letter-spacing:0.5px;transition:all 0.15s;">🏠 Resi Schedule</div>
-      </div>
-      <!-- Claims content -->
-      <div id="billing-claims-content" class="content" style="max-width:1200px;">
+      <div class="content" style="max-width:1200px;">
 
         <!-- Billing Dashboard -->
         <div id="billing-dashboard" style="margin-bottom:24px;">
@@ -1661,17 +1658,17 @@
 
         </div>
       </div>
-      <!-- Resi Schedule Content (hidden by default) -->
-      <div id="billing-resi-content" class="content" style="display:none;max-width:1400px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-          <div>
-            <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);">Residential Drywall Schedule</div>
-            <div style="font-size:11px;color:var(--muted);">Track drywall phases for residential projects</div>
-          </div>
-          <div style="display:flex;gap:8px;">
-            <button class="btn btn-primary" onclick="openAddResiModal()">+ Add Project</button>
-          </div>
+    </div>
+
+    <!-- RESI SCHEDULE PAGE -->
+    <div id="page-resi" class="page">
+      <div class="topbar">
+        <div class="page-title">🏠 Resi Schedule</div>
+        <div class="topbar-actions">
+          <button class="btn btn-primary" onclick="openAddResiModal()">+ Add Project</button>
         </div>
+      </div>
+      <div class="content" style="max-width:1400px;">
         <div id="resi-schedule-grid"></div>
       </div>
     </div>
@@ -2605,13 +2602,14 @@ function showPage(page) {
   document.getElementById('page-' + page).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   const items = document.querySelectorAll('.nav-item');
-  const map = { dashboard: 0, bids: 1, contacts: 2, analytics: 3, billing: 4, equipment: 5 };
+  const map = { dashboard: 0, bids: 1, contacts: 2, analytics: 3, billing: 4, resi: 5, equipment: 6 };
   if (map[page] !== undefined) items[map[page]].classList.add('active');
   if (page === 'dashboard') renderDashboard();
   if (page === 'bids') renderBidsTable();
   if (page === 'contacts') { renderCompanyList(); if (selectedCompanyId) renderCompanyDetail(selectedCompanyId); }
   if (page === 'analytics') renderAnalytics();
   if (page === 'billing') initBillingPage();
+  if (page === 'resi') renderResiSchedule();
   if (page === 'equipment') renderEquipmentPage();
   // Close mobile sidebar
   closeMobileSidebar();
@@ -5600,33 +5598,6 @@ function clearMaintenance(id) {
   document.getElementById('equip-detail-modal').classList.remove('open');
   renderEquipmentPage();
   showToast(`"${eq.name}" marked as available`);
-}
-
-// ============ BILLING TAB SWITCHING ============
-function switchBillingTab(tab) {
-  var claims = document.getElementById('billing-claims-content');
-  var resi = document.getElementById('billing-resi-content');
-  var tabClaims = document.getElementById('billing-tab-claims');
-  var tabResi = document.getElementById('billing-tab-resi');
-  var actions = document.getElementById('billing-topbar-actions');
-  if (tab === 'claims') {
-    claims.style.display = '';
-    resi.style.display = 'none';
-    tabClaims.style.borderBottomColor = 'var(--accent)';
-    tabClaims.style.color = 'var(--accent)';
-    tabResi.style.borderBottomColor = 'transparent';
-    tabResi.style.color = 'var(--muted)';
-    actions.innerHTML = '<button class="btn btn-primary" onclick="saveClaimToDB()" style="font-size:12px;">💾 Save Claim</button><button class="btn btn-ghost" onclick="exportClaimPDF()" style="font-size:12px;">⬇ Export PDF</button>';
-  } else {
-    claims.style.display = 'none';
-    resi.style.display = '';
-    tabClaims.style.borderBottomColor = 'transparent';
-    tabClaims.style.color = 'var(--muted)';
-    tabResi.style.borderBottomColor = 'var(--accent)';
-    tabResi.style.color = 'var(--accent)';
-    actions.innerHTML = '<button class="btn btn-primary" onclick="openAddResiModal()" style="font-size:12px;">+ Add Project</button>';
-    renderResiSchedule();
-  }
 }
 
 // ============ RESI DRYWALL SCHEDULE ============
