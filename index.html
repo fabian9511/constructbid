@@ -1873,9 +1873,19 @@
       </div>
       <div style="display:flex;gap:8px;align-items:center;">
         <button class="btn btn-ghost" onclick="openMyCompanyModal()" style="font-size:12px;">⚙️ My Company</button>
+        <button class="btn btn-ghost" onclick="toggleSavedQuotesPanel()" style="font-size:12px;" id="saved-quotes-btn">📁 Saved Quotes</button>
         <button class="btn btn-ghost" onclick="saveCurrentQuote()" style="font-size:12px;border-color:var(--accent);color:var(--accent);">💾 Save Quote</button>
         <button class="btn btn-primary" onclick="exportProposalPDF()" style="font-size:12px;">⬇ Export PDF</button>
       </div>
+    </div>
+
+    <!-- Saved Quotes Slide Panel -->
+    <div id="saved-quotes-panel" style="display:none;position:absolute;top:58px;right:0;width:340px;height:calc(100% - 58px);background:var(--surface);border-left:1px solid var(--border);z-index:200;flex-direction:column;overflow:hidden;box-shadow:-4px 0 20px rgba(0,0,0,0.3);">
+      <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);">Saved Quotes</div>
+        <button onclick="toggleSavedQuotesPanel()" style="background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;line-height:1;">✕</button>
+      </div>
+      <div id="saved-quotes-list" style="flex:1;overflow-y:auto;padding:12px;"></div>
     </div>
 
     <!-- Page tabs -->
@@ -2916,10 +2926,23 @@ function openProposalModal(bidId) {
   // Always open on page 1
   switchProposalPage(1);
   document.getElementById('proposal-modal').classList.add('open');
+  
+  // Auto-load latest saved quote for this bid (if exists)
+  if (bidId) {
+    loadSavedQuotesList().then(function(quotes) {
+      if (quotes.length > 0) {
+        loadQuoteFormState(quotes[0].quote_data);
+        showToast('Loaded latest saved quote');
+      }
+      renderSavedQuotesList();
+    });
+  }
 }
 
 function closeProposalModal() {
   document.getElementById('proposal-modal').classList.remove('open');
+  const panel = document.getElementById('saved-quotes-panel');
+  if (panel) panel.style.display = 'none';
 }
 
 // Ctrl+S saves quote while modal is open
@@ -4911,39 +4934,126 @@ function setSavedQuotes(arr) {
   localStorage.setItem('qgs_saved_quotes', JSON.stringify(arr));
 }
 
-function saveCurrentQuote() {
+async function saveCurrentQuote() {
   const state = getQuoteFormState();
   const label = state.quoteNum || state.project || 'Untitled Quote';
   if (!state.project && !state.quoteNum) {
     showToast('Add a project name or quote # before saving');
     return;
   }
-  const quotes = getSavedQuotes();
-  // Replace existing if same bidId or quoteNum, else push
-  const idx = state.bidId ? quotes.findIndex(q => q.bidId === state.bidId) :
-              (state.quoteNum ? quotes.findIndex(q => q.quoteNum === state.quoteNum) : -1);
-  if (idx >= 0) {
-    quotes[idx] = state;
-  } else {
-    quotes.unshift(state);
-  }
-  setSavedQuotes(quotes);
-  showToast(`Quote "${label}" saved ✓`);
+  const bidId = currentProposalBidId || null;
   
-  // Also sync to Supabase if available
-  if (typeof supabase !== 'undefined' && supabase) {
-    const uid = supabase.auth?.getUser?.()?.then?.(r => r?.data?.user?.id);
-    if (uid) uid.then(id => {
-      if (!id) return;
-      supabase.from('saved_quotes').upsert({
-        user_id: id,
-        bid_id: state.bidId || null,
-        quote_num: state.quoteNum || null,
-        data: state,
-        updated_at: new Date().toISOString(),
-      }, { onConflict: 'user_id,bid_id' }).then(() => {});
-    });
+  try {
+    // Check if quote already exists for this bid + quoteNum
+    let existing = null;
+    if (bidId && state.quoteNum) {
+      const { data } = await window._supabase.from('saved_quotes')
+        .select('id').eq('bid_id', bidId).eq('quote_num', state.quoteNum).limit(1);
+      existing = data && data.length ? data[0] : null;
+    }
+    
+    if (existing) {
+      await window._supabase.from('saved_quotes').update({
+        quote_data: state,
+        quote_label: label,
+        quote_num: state.quoteNum || '',
+        project: state.project || '',
+        bid_id: bidId,
+        updated_at: new Date().toISOString()
+      }).eq('id', existing.id);
+    } else {
+      await window._supabase.from('saved_quotes').insert({
+        quote_data: state,
+        quote_label: label,
+        quote_num: state.quoteNum || '',
+        project: state.project || '',
+        bid_id: bidId
+      });
+    }
+    showToast(`Quote "${label}" saved ✓`);
+    renderSavedQuotesList();
+  } catch(e) {
+    console.error('Quote save error:', e);
+    showToast('Error saving quote');
   }
+}
+
+async function loadSavedQuotesList() {
+  try {
+    let query = window._supabase.from('saved_quotes').select('*').order('updated_at', { ascending: false });
+    if (currentProposalBidId) query = query.eq('bid_id', currentProposalBidId);
+    const { data } = await query;
+    return data || [];
+  } catch(e) { return []; }
+}
+
+async function deleteQuoteById(id) {
+  try {
+    await window._supabase.from('saved_quotes').delete().eq('id', id);
+    showToast('Quote deleted');
+  } catch(e) { showToast('Error deleting quote'); }
+}
+
+async function loadQuoteById(id) {
+  try {
+    const { data } = await window._supabase.from('saved_quotes')
+      .select('*').eq('id', id).single();
+    if (data && data.quote_data) {
+      loadQuoteFormState(data.quote_data);
+      showToast(`Loaded: ${data.quote_label || data.project || 'Quote'}`);
+    }
+  } catch(e) { showToast('Error loading quote'); }
+}
+
+function toggleSavedQuotesPanel() {
+  const panel = document.getElementById('saved-quotes-panel');
+  const isOpen = panel.style.display !== 'none' && panel.style.display !== '';
+  panel.style.display = isOpen ? 'none' : 'flex';
+  panel.style.flexDirection = 'column';
+  if (!isOpen) renderSavedQuotesList();
+}
+
+async function renderSavedQuotesList() {
+  const el = document.getElementById('saved-quotes-list');
+  if (!el) return;
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);">Loading...</div>';
+  
+  const quotes = await loadSavedQuotesList();
+  const bidName = currentProposalBidId ? (bids.find(b => b.id === currentProposalBidId)?.name || '') : '';
+  
+  if (!quotes.length) {
+    el.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--muted);font-size:12px;"><div style="font-size:28px;margin-bottom:10px;">📋</div>No saved quotes for this bid yet.<br>Fill out the form and click <strong>Save Quote</strong>.</div>';
+    return;
+  }
+  el.innerHTML = '<div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;padding:0 2px;">'+quotes.length+' quote'+(quotes.length!==1?'s':'')+' for this bid</div>' +
+  quotes.map(q => {
+    const d = q.quote_data || {};
+    const label = q.quote_label || q.quote_num || q.project || 'Untitled Quote';
+    const subLabel = [q.quote_num, q.project].filter(Boolean).join(' · ');
+    const client = d.clientCompany || d.client || '—';
+    const savedAt = q.updated_at ? new Date(q.updated_at).toLocaleDateString('en-CA', {month:'short',day:'numeric',year:'numeric'}) : '';
+    const total = (d.categories || []).reduce((a,c) => a + (c.items||[]).reduce((b,li) => b+(li.qty*li.price),0), 0);
+    return '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:10px;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">' +
+        '<div style="font-size:13px;font-weight:700;color:var(--text);line-height:1.3;flex:1;margin-right:8px;">' + label + '</div>' +
+        '<div style="display:flex;gap:4px;flex-shrink:0;">' +
+          '<button onclick="loadQuoteById(' + q.id + ')" style="background:var(--accent);color:#000;border:none;border-radius:4px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;">Load</button>' +
+          '<button onclick="deleteQuoteAndRefresh(' + q.id + ')" style="background:transparent;color:var(--lost);border:1px solid var(--border);border-radius:4px;padding:4px 8px;font-size:11px;cursor:pointer;">✕</button>' +
+        '</div>' +
+      '</div>' +
+      (subLabel ? '<div style="font-size:10px;color:var(--muted);margin-bottom:3px;">' + subLabel + '</div>' : '') +
+      '<div style="display:flex;gap:12px;font-size:11px;color:var(--muted);">' +
+        '<span>🏢 ' + client + '</span>' +
+        (total ? '<span style="color:var(--accent);font-weight:600;">$' + total.toLocaleString() + '</span>' : '') +
+        (savedAt ? '<span>💾 ' + savedAt + '</span>' : '') +
+      '</div></div>';
+  }).join('');
+}
+
+async function deleteQuoteAndRefresh(id) {
+  if (!confirm('Delete this quote?')) return;
+  await deleteQuoteById(id);
+  renderSavedQuotesList();
 }
 
 // ── Export PDF — uses Blob + hidden iframe print ────────────────────────
