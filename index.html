@@ -5601,10 +5601,36 @@ function clearMaintenance(id) {
 }
 
 // ============ RESI DRYWALL SCHEDULE ============
-let resiProjects = JSON.parse(localStorage.getItem('cb_resi_schedule') || '[]');
+let resiProjects = [];
 
-function saveResiData() {
-  localStorage.setItem('cb_resi_schedule', JSON.stringify(resiProjects));
+async function loadResiData() {
+  try {
+    var { data } = await window._supabase.from('resi_schedule').select('*').order('created_at', { ascending: false });
+    resiProjects = (data || []).map(function(r) {
+      return { id: r.id, bidId: r.bid_id, name: r.name, person: r.person || '', builder: r.builder || '',
+        status: r.status || 'Active', lockbox: r.lockbox || '', specs: r.specs || '',
+        dwSqft: r.dw_sqft || '', garageSqft: r.garage_sqft || '', floorSqft: r.floor_sqft || '',
+        garageFloorSqft: r.garage_floor_sqft || '', dates: r.dates || {} };
+    });
+  } catch(e) { console.error('Load resi error:', e); }
+}
+
+async function saveResiToDb(data, editId) {
+  var row = { bid_id: data.bidId || null, name: data.name, person: data.person, builder: data.builder,
+    status: data.status, lockbox: data.lockbox, specs: data.specs, dw_sqft: data.dwSqft,
+    garage_sqft: data.garageSqft, floor_sqft: data.floorSqft, garage_floor_sqft: data.garageFloorSqft,
+    dates: data.dates, updated_at: new Date().toISOString() };
+  if (editId) {
+    await window._supabase.from('resi_schedule').update(row).eq('id', editId);
+    return editId;
+  } else {
+    var { data: inserted } = await window._supabase.from('resi_schedule').insert(row).select('id').single();
+    return inserted ? inserted.id : null;
+  }
+}
+
+async function deleteResiFromDb(id) {
+  await window._supabase.from('resi_schedule').delete().eq('id', id);
 }
 
 var _editResiId = null;
@@ -5613,7 +5639,8 @@ function openAddResiModal() {
   _editResiId = null;
   var h = '<div class="modal-overlay open" id="resi-modal"><div class="modal modal-lg" style="max-width:800px;"><div class="modal-header"><div class="modal-title" id="resi-modal-title">Add Resi Project</div><button class="modal-close" onclick="document.getElementById(\'resi-modal\').remove()">&times;</button></div><div class="modal-body">' +
     '<div class="form-grid">' +
-      '<div class="form-group form-full"><label class="form-label">Project Name *</label><input type="text" class="form-input" id="resi-name" placeholder="e.g. O\'Connor - 84 Westover Drive SW"></div>' +
+      '<div class="form-group form-full"><label class="form-label">Project (from Won Bids) *</label><select class="form-select" id="resi-bid-select" onchange="onResiBidChange()"><option value="">— Select a bid —</option>' + bids.filter(function(b){return b.status==='won';}).map(function(b){return '<option value="'+b.id+'">'+b.name+'</option>';}).join('') + '</select></div>' +
+      '<div class="form-group form-full"><label class="form-label">Project Name</label><input type="text" class="form-input" id="resi-name" placeholder="Auto-filled from bid or type manually"></div>' +
       '<div class="form-group"><label class="form-label">Contact Person</label><input type="text" class="form-input" id="resi-person" placeholder="e.g. Fabian Vargas"></div>' +
       '<div class="form-group"><label class="form-label">Builder</label><input type="text" class="form-input" id="resi-builder" placeholder="e.g. LD&A"></div>' +
       '<div class="form-group"><label class="form-label">Status</label><select class="form-select" id="resi-status"><option value="Active">Active</option><option value="Scheduled">Scheduled</option><option value="Completed">Completed</option><option value="On Hold">On Hold</option></select></div>' +
@@ -5646,12 +5673,24 @@ function openAddResiModal() {
   document.body.insertAdjacentHTML('beforeend', h);
 }
 
+function onResiBidChange() {
+  var sel = document.getElementById('resi-bid-select');
+  var bidId = parseInt(sel.value);
+  var bid = bids.find(function(b) { return b.id === bidId; });
+  if (bid) {
+    document.getElementById('resi-name').value = bid.name;
+    document.getElementById('resi-builder').value = bid.company || '';
+    document.getElementById('resi-person').value = bid.contact || '';
+  }
+}
+
 function openEditResiModal(id) {
   openAddResiModal();
   _editResiId = id;
   var p = resiProjects.find(function(r) { return r.id === id; });
   if (!p) return;
   document.getElementById('resi-modal-title').textContent = 'Edit Resi Project';
+  if (p.bidId) document.getElementById('resi-bid-select').value = p.bidId;
   document.getElementById('resi-name').value = p.name || '';
   document.getElementById('resi-person').value = p.person || '';
   document.getElementById('resi-builder').value = p.builder || '';
@@ -5669,11 +5708,12 @@ function openEditResiModal(id) {
   });
 }
 
-function saveResiProject() {
+async function saveResiProject() {
   var name = document.getElementById('resi-name').value.trim();
   if (!name) { showToast('Enter project name'); return; }
   var data = {
     name: name,
+    bidId: parseInt(document.getElementById('resi-bid-select').value) || null,
     person: document.getElementById('resi-person').value.trim(),
     builder: document.getElementById('resi-builder').value.trim(),
     status: document.getElementById('resi-status').value,
@@ -5688,32 +5728,40 @@ function saveResiProject() {
   ['ins','dwipds','sprayfoam','insulation','delivery','drywall','loosefill','taping','texture','sanding','cleaning','touchups'].forEach(function(k) {
     data.dates[k] = document.getElementById('resi-d-' + k).value || '';
   });
-  if (_editResiId) {
-    var idx = resiProjects.findIndex(function(r) { return r.id === _editResiId; });
-    if (idx >= 0) { data.id = _editResiId; resiProjects[idx] = data; }
-    showToast('"' + name + '" updated');
-  } else {
-    data.id = 'resi_' + Date.now();
-    resiProjects.push(data);
-    showToast('"' + name + '" added');
-  }
-  saveResiData();
+  try {
+    if (_editResiId) {
+      await saveResiToDb(data, _editResiId);
+      var idx = resiProjects.findIndex(function(r) { return r.id === _editResiId; });
+      if (idx >= 0) { data.id = _editResiId; resiProjects[idx] = data; }
+      showToast('"' + name + '" updated');
+    } else {
+      var newId = await saveResiToDb(data);
+      data.id = newId;
+      resiProjects.unshift(data);
+      showToast('"' + name + '" added');
+    }
+  } catch(e) { console.error('Save resi error:', e); showToast('Error saving'); }
   document.getElementById('resi-modal').remove();
   renderResiSchedule();
 }
 
-function deleteResiProject(id) {
+async function deleteResiProject(id) {
   var p = resiProjects.find(function(r) { return r.id === id; });
   if (!p || !confirm('Delete "' + p.name + '"?')) return;
-  resiProjects = resiProjects.filter(function(r) { return r.id !== id; });
-  saveResiData();
-  renderResiSchedule();
-  showToast('"' + p.name + '" deleted');
+  try {
+    await deleteResiFromDb(id);
+    resiProjects = resiProjects.filter(function(r) { return r.id !== id; });
+    renderResiSchedule();
+    showToast('"' + p.name + '" deleted');
+  } catch(e) { showToast('Error deleting'); }
 }
 
-function renderResiSchedule() {
+async function renderResiSchedule() {
   var grid = document.getElementById('resi-schedule-grid');
   if (!grid) return;
+  if (!resiProjects.length) {
+    await loadResiData();
+  }
   if (!resiProjects.length) {
     grid.innerHTML = '<div style="text-align:center;padding:60px 20px;color:var(--muted);"><div style="font-size:40px;margin-bottom:12px;">🏠</div><div style="font-size:14px;margin-bottom:6px;">No residential projects yet</div><div style="font-size:12px;">Click <strong>+ Add Project</strong> to create a drywall schedule</div></div>';
     return;
@@ -5752,10 +5800,10 @@ function renderResiSchedule() {
           var weight = isToday ? '700' : '400';
           return '<td style="padding:10px;text-align:center;font-size:11px;font-family:DM Mono,monospace;color:' + color + ';font-weight:' + weight + ';">' + (v ? fmtD(v) : '—') + '</td>';
         }).join('') +
-        '<td style="padding:10px;"><div style="display:flex;gap:4px;">' +
-          '<span style="cursor:pointer;font-size:12px;" onclick="openEditResiModal(\'' + p.id + '\')" title="Edit">✏️</span>' +
-          '<span style="cursor:pointer;font-size:12px;" onclick="exportResiPDF(\'' + p.id + '\')" title="Export PDF">⬇</span>' +
-          '<span style="cursor:pointer;font-size:12px;color:var(--lost);" onclick="deleteResiProject(\'' + p.id + '\')" title="Delete">🗑</span>' +
+        '<td style="padding:10px;"><div class="row-actions" style="opacity:1;gap:6px;">' +
+          '<div class="action-btn" onclick="openEditResiModal(\'' + p.id + '\')" title="Edit">✏️</div>' +
+          '<div class="action-btn" onclick="exportResiPDF(\'' + p.id + '\')" title="Export PDF" style="color:var(--accent);">📄</div>' +
+          '<div class="action-btn del" onclick="deleteResiProject(\'' + p.id + '\')" title="Delete">🗑</div>' +
         '</div></td>' +
       '</tr>';
     }).join('') +
@@ -5803,6 +5851,20 @@ function exportResiPDF(id) {
       (p.specs ? '<div style="margin-top:8px;font-size:9pt;color:#333;background:#f5f5f5;padding:8px 10px;border-radius:4px;"><strong>Specs:</strong> ' + p.specs + '</div>' : '') +
     '</div>' +
     '<table style="width:100%;"><thead><tr style="background:#2a2a2a;color:#fff;"><th style="padding:10px 14px;text-align:left;font-size:9pt;text-transform:uppercase;letter-spacing:1px;">Phase</th><th style="padding:10px 14px;text-align:center;font-size:9pt;text-transform:uppercase;letter-spacing:1px;">Scheduled Date</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+    '<div style="margin-top:18px;border:2px solid #1a1a1a;border-radius:4px;overflow:hidden;">' +
+      '<div style="background:#1a1a1a;color:#fff;padding:8px 14px;font-size:10pt;font-weight:700;letter-spacing:1px;">INVOICING</div>' +
+      '<div style="padding:12px 16px;font-size:9pt;line-height:1.7;color:#333;">' +
+        '<p style="margin-bottom:10px;"><strong><em>***All new staff must do a site orientation BEFORE starting work on site - this includes delivery drivers, spray foam and blow in trucks.***</em></strong></p>' +
+        '<p style="margin-bottom:10px;">FLHA\'s must be completed every day and available, on site, upon request. <strong><em>Leave FLHA on QGS folder - Located in each house.</em></strong></p>' +
+        '<ul style="margin:0 0 10px 20px;">' +
+          '<li>All invoices need to be submitted on the 10th and 25th of each month. Paydays are on the 15th and the last day of each month.</li>' +
+          '<li>Subcontractors need to submit a direct deposit form or an Email for E-transfer.</li>' +
+          '<li>All trades must have their <strong><u>WCB</u></strong> in place and in good standing, no exceptions.</li>' +
+          '<li><strong><em><u>All trades must submit their Hazard assessment with their invoice for each job completed</u></em></strong> (Hazard assessments will be supplied by site supervisors)</li>' +
+        '</ul>' +
+        '<p><strong><u>Garbage</u></strong> – please clean up around your site daily and at the end of your scope of work.</p>' +
+      '</div>' +
+    '</div>' +
     '<div style="margin-top:20px;border-top:2px solid #f5a623;padding-top:8px;text-align:center;font-size:8pt;color:#888;">' + (myCompany.name || '') + ' · ' + (myCompany.phone || '') + ' · ' + (myCompany.email || '') + '</div>' +
     '<scr' + 'ipt>document.title="Schedule - ' + p.name.replace(/"/g,'') + '";window.onafterprint=function(){window.close();};setTimeout(function(){window.print();},500);<\/scr' + 'ipt></body></html>';
 
