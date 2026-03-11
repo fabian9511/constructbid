@@ -5687,7 +5687,7 @@ function onResiBidChange() {
 function openEditResiModal(id) {
   openAddResiModal();
   _editResiId = id;
-  var p = resiProjects.find(function(r) { return r.id === id; });
+  var p = resiProjects.find(function(r) { return r.id == id; });
   if (!p) return;
   document.getElementById('resi-modal-title').textContent = 'Edit Resi Project';
   if (p.bidId) document.getElementById('resi-bid-select').value = p.bidId;
@@ -5731,7 +5731,7 @@ async function saveResiProject() {
   try {
     if (_editResiId) {
       await saveResiToDb(data, _editResiId);
-      var idx = resiProjects.findIndex(function(r) { return r.id === _editResiId; });
+      var idx = resiProjects.findIndex(function(r) { return r.id == _editResiId; });
       if (idx >= 0) { data.id = _editResiId; resiProjects[idx] = data; }
       showToast('"' + name + '" updated');
     } else {
@@ -5746,11 +5746,11 @@ async function saveResiProject() {
 }
 
 async function deleteResiProject(id) {
-  var p = resiProjects.find(function(r) { return r.id === id; });
+  var p = resiProjects.find(function(r) { return r.id == id; });
   if (!p || !confirm('Delete "' + p.name + '"?')) return;
   try {
     await deleteResiFromDb(id);
-    resiProjects = resiProjects.filter(function(r) { return r.id !== id; });
+    resiProjects = resiProjects.filter(function(r) { return r.id != id; });
     renderResiSchedule();
     showToast('"' + p.name + '" deleted');
   } catch(e) { showToast('Error deleting'); }
@@ -5801,9 +5801,9 @@ async function renderResiSchedule() {
           return '<td style="padding:10px;text-align:center;font-size:11px;font-family:DM Mono,monospace;color:' + color + ';font-weight:' + weight + ';">' + (v ? fmtD(v) : '—') + '</td>';
         }).join('') +
         '<td style="padding:10px;"><div class="row-actions" style="opacity:1;gap:6px;">' +
-          '<div class="action-btn" onclick="openEditResiModal(\'' + p.id + '\')" title="Edit">✏️</div>' +
-          '<div class="action-btn" onclick="exportResiPDF(\'' + p.id + '\')" title="Export PDF" style="color:var(--accent);">📄</div>' +
-          '<div class="action-btn del" onclick="deleteResiProject(\'' + p.id + '\')" title="Delete">🗑</div>' +
+          '<div class="action-btn" onclick="openEditResiModal(' + p.id + ')" title="Edit">✏️</div>' +
+          '<div class="action-btn" onclick="exportResiPDF(' + p.id + ')" title="Export PDF" style="color:var(--accent);">📄</div>' +
+          '<div class="action-btn del" onclick="deleteResiProject(' + p.id + ')" title="Delete">🗑</div>' +
         '</div></td>' +
       '</tr>';
     }).join('') +
@@ -5811,7 +5811,7 @@ async function renderResiSchedule() {
 }
 
 function exportResiPDF(id) {
-  var p = resiProjects.find(function(r) { return r.id === id; });
+  var p = resiProjects.find(function(r) { return r.id == id; });
   if (!p) return;
   var dates = p.dates || {};
   var fmtD = function(d) { if (!d) return '—'; return new Date(d + 'T12:00:00').toLocaleDateString('en-CA', {month:'short',day:'numeric',year:'numeric'}); };
