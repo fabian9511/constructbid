@@ -1505,12 +1505,18 @@
     <div id="page-billing" class="page">
       <div class="topbar">
         <div class="page-title">Progress Billing</div>
-        <div class="topbar-actions">
+        <div class="topbar-actions" id="billing-topbar-actions">
           <button class="btn btn-primary" onclick="saveClaimToDB()" style="font-size:12px;">💾 Save Claim</button>
           <button class="btn btn-ghost" onclick="exportClaimPDF()" style="font-size:12px;">⬇ Export PDF</button>
         </div>
       </div>
-      <div class="content" style="max-width:1200px;">
+      <!-- Sub-tabs -->
+      <div style="display:flex;background:var(--surface2);border-bottom:1px solid var(--border);flex-shrink:0;">
+        <div id="billing-tab-claims" onclick="switchBillingTab('claims')" style="padding:10px 24px;font-size:12px;font-weight:600;cursor:pointer;border-bottom:2px solid var(--accent);color:var(--accent);letter-spacing:0.5px;transition:all 0.15s;">Progress Claims</div>
+        <div id="billing-tab-resi" onclick="switchBillingTab('resi')" style="padding:10px 24px;font-size:12px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;color:var(--muted);letter-spacing:0.5px;transition:all 0.15s;">🏠 Resi Schedule</div>
+      </div>
+      <!-- Claims content -->
+      <div id="billing-claims-content" class="content" style="max-width:1200px;">
 
         <!-- Billing Dashboard -->
         <div id="billing-dashboard" style="margin-bottom:24px;">
@@ -1654,6 +1660,19 @@
           <div id="claim-grand-summary" style="background:var(--surface);border:1px solid var(--accent);border-radius:8px;padding:20px;margin-top:16px;display:none;"></div>
 
         </div>
+      </div>
+      <!-- Resi Schedule Content (hidden by default) -->
+      <div id="billing-resi-content" class="content" style="display:none;max-width:1400px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);">Residential Drywall Schedule</div>
+            <div style="font-size:11px;color:var(--muted);">Track drywall phases for residential projects</div>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-primary" onclick="openAddResiModal()">+ Add Project</button>
+          </div>
+        </div>
+        <div id="resi-schedule-grid"></div>
       </div>
     </div>
 
@@ -5581,6 +5600,245 @@ function clearMaintenance(id) {
   document.getElementById('equip-detail-modal').classList.remove('open');
   renderEquipmentPage();
   showToast(`"${eq.name}" marked as available`);
+}
+
+// ============ BILLING TAB SWITCHING ============
+function switchBillingTab(tab) {
+  var claims = document.getElementById('billing-claims-content');
+  var resi = document.getElementById('billing-resi-content');
+  var tabClaims = document.getElementById('billing-tab-claims');
+  var tabResi = document.getElementById('billing-tab-resi');
+  var actions = document.getElementById('billing-topbar-actions');
+  if (tab === 'claims') {
+    claims.style.display = '';
+    resi.style.display = 'none';
+    tabClaims.style.borderBottomColor = 'var(--accent)';
+    tabClaims.style.color = 'var(--accent)';
+    tabResi.style.borderBottomColor = 'transparent';
+    tabResi.style.color = 'var(--muted)';
+    actions.innerHTML = '<button class="btn btn-primary" onclick="saveClaimToDB()" style="font-size:12px;">💾 Save Claim</button><button class="btn btn-ghost" onclick="exportClaimPDF()" style="font-size:12px;">⬇ Export PDF</button>';
+  } else {
+    claims.style.display = 'none';
+    resi.style.display = '';
+    tabClaims.style.borderBottomColor = 'transparent';
+    tabClaims.style.color = 'var(--muted)';
+    tabResi.style.borderBottomColor = 'var(--accent)';
+    tabResi.style.color = 'var(--accent)';
+    actions.innerHTML = '<button class="btn btn-primary" onclick="openAddResiModal()" style="font-size:12px;">+ Add Project</button>';
+    renderResiSchedule();
+  }
+}
+
+// ============ RESI DRYWALL SCHEDULE ============
+let resiProjects = JSON.parse(localStorage.getItem('cb_resi_schedule') || '[]');
+
+function saveResiData() {
+  localStorage.setItem('cb_resi_schedule', JSON.stringify(resiProjects));
+}
+
+var _editResiId = null;
+
+function openAddResiModal() {
+  _editResiId = null;
+  var h = '<div class="modal-overlay open" id="resi-modal"><div class="modal modal-lg" style="max-width:800px;"><div class="modal-header"><div class="modal-title" id="resi-modal-title">Add Resi Project</div><button class="modal-close" onclick="document.getElementById(\'resi-modal\').remove()">&times;</button></div><div class="modal-body">' +
+    '<div class="form-grid">' +
+      '<div class="form-group form-full"><label class="form-label">Project Name *</label><input type="text" class="form-input" id="resi-name" placeholder="e.g. O\'Connor - 84 Westover Drive SW"></div>' +
+      '<div class="form-group"><label class="form-label">Contact Person</label><input type="text" class="form-input" id="resi-person" placeholder="e.g. Fabian Vargas"></div>' +
+      '<div class="form-group"><label class="form-label">Builder</label><input type="text" class="form-input" id="resi-builder" placeholder="e.g. LD&A"></div>' +
+      '<div class="form-group"><label class="form-label">Status</label><select class="form-select" id="resi-status"><option value="Active">Active</option><option value="Scheduled">Scheduled</option><option value="Completed">Completed</option><option value="On Hold">On Hold</option></select></div>' +
+      '<div class="form-group"><label class="form-label">Lockbox Code</label><input type="text" class="form-input" id="resi-lockbox" placeholder="e.g. 1358"></div>' +
+    '</div>' +
+    '<div class="form-group" style="margin-top:12px;"><label class="form-label">Project Specs / Notes</label><textarea class="form-input" id="resi-specs" rows="2" placeholder="e.g. Level 5 Finish, 2 layers 5/8 on garage ceiling..."></textarea></div>' +
+    '<div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:16px 0 8px;border-top:1px solid var(--border);padding-top:12px;">Square Footage</div>' +
+    '<div class="form-grid">' +
+      '<div class="form-group"><label class="form-label">Drywall Sqft</label><input type="text" class="form-input" id="resi-dw-sqft" placeholder="e.g. 7,748"></div>' +
+      '<div class="form-group"><label class="form-label">Garage Sqft</label><input type="text" class="form-input" id="resi-garage-sqft" placeholder="e.g. 688"></div>' +
+      '<div class="form-group"><label class="form-label">Floor Sqft</label><input type="text" class="form-input" id="resi-floor-sqft" placeholder="e.g. 959"></div>' +
+      '<div class="form-group"><label class="form-label">Garage Floor Sqft</label><input type="text" class="form-input" id="resi-garage-floor-sqft" placeholder=""></div>' +
+    '</div>' +
+    '<div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:16px 0 8px;border-top:1px solid var(--border);padding-top:12px;">Schedule Dates</div>' +
+    '<div class="form-grid">' +
+      '<div class="form-group"><label class="form-label">Ins / IPDS</label><input type="date" class="form-input" id="resi-d-ins"></div>' +
+      '<div class="form-group"><label class="form-label">DW IPDS / Count</label><input type="date" class="form-input" id="resi-d-dwipds"></div>' +
+      '<div class="form-group"><label class="form-label">Spray Foam</label><input type="date" class="form-input" id="resi-d-sprayfoam"></div>' +
+      '<div class="form-group"><label class="form-label">Insulation</label><input type="date" class="form-input" id="resi-d-insulation"></div>' +
+      '<div class="form-group"><label class="form-label">DW Delivery</label><input type="date" class="form-input" id="resi-d-delivery"></div>' +
+      '<div class="form-group"><label class="form-label">Drywall</label><input type="date" class="form-input" id="resi-d-drywall"></div>' +
+      '<div class="form-group"><label class="form-label">Loose Fill</label><input type="date" class="form-input" id="resi-d-loosefill"></div>' +
+      '<div class="form-group"><label class="form-label">Taping</label><input type="date" class="form-input" id="resi-d-taping"></div>' +
+      '<div class="form-group"><label class="form-label">Texture / Lvl 5</label><input type="date" class="form-input" id="resi-d-texture"></div>' +
+      '<div class="form-group"><label class="form-label">Sanding</label><input type="date" class="form-input" id="resi-d-sanding"></div>' +
+      '<div class="form-group"><label class="form-label">Cleaning</label><input type="date" class="form-input" id="resi-d-cleaning"></div>' +
+      '<div class="form-group"><label class="form-label">Touch Ups</label><input type="date" class="form-input" id="resi-d-touchups"></div>' +
+    '</div>' +
+  '</div><div class="modal-footer"><button class="btn btn-ghost" onclick="document.getElementById(\'resi-modal\').remove()">Cancel</button><button class="btn btn-primary" onclick="saveResiProject()">Save Project</button></div></div></div>';
+  document.body.insertAdjacentHTML('beforeend', h);
+}
+
+function openEditResiModal(id) {
+  openAddResiModal();
+  _editResiId = id;
+  var p = resiProjects.find(function(r) { return r.id === id; });
+  if (!p) return;
+  document.getElementById('resi-modal-title').textContent = 'Edit Resi Project';
+  document.getElementById('resi-name').value = p.name || '';
+  document.getElementById('resi-person').value = p.person || '';
+  document.getElementById('resi-builder').value = p.builder || '';
+  document.getElementById('resi-status').value = p.status || 'Active';
+  document.getElementById('resi-lockbox').value = p.lockbox || '';
+  document.getElementById('resi-specs').value = p.specs || '';
+  document.getElementById('resi-dw-sqft').value = p.dwSqft || '';
+  document.getElementById('resi-garage-sqft').value = p.garageSqft || '';
+  document.getElementById('resi-floor-sqft').value = p.floorSqft || '';
+  document.getElementById('resi-garage-floor-sqft').value = p.garageFloorSqft || '';
+  var dates = p.dates || {};
+  ['ins','dwipds','sprayfoam','insulation','delivery','drywall','loosefill','taping','texture','sanding','cleaning','touchups'].forEach(function(k) {
+    var el = document.getElementById('resi-d-' + k);
+    if (el && dates[k]) el.value = dates[k];
+  });
+}
+
+function saveResiProject() {
+  var name = document.getElementById('resi-name').value.trim();
+  if (!name) { showToast('Enter project name'); return; }
+  var data = {
+    name: name,
+    person: document.getElementById('resi-person').value.trim(),
+    builder: document.getElementById('resi-builder').value.trim(),
+    status: document.getElementById('resi-status').value,
+    lockbox: document.getElementById('resi-lockbox').value.trim(),
+    specs: document.getElementById('resi-specs').value.trim(),
+    dwSqft: document.getElementById('resi-dw-sqft').value.trim(),
+    garageSqft: document.getElementById('resi-garage-sqft').value.trim(),
+    floorSqft: document.getElementById('resi-floor-sqft').value.trim(),
+    garageFloorSqft: document.getElementById('resi-garage-floor-sqft').value.trim(),
+    dates: {}
+  };
+  ['ins','dwipds','sprayfoam','insulation','delivery','drywall','loosefill','taping','texture','sanding','cleaning','touchups'].forEach(function(k) {
+    data.dates[k] = document.getElementById('resi-d-' + k).value || '';
+  });
+  if (_editResiId) {
+    var idx = resiProjects.findIndex(function(r) { return r.id === _editResiId; });
+    if (idx >= 0) { data.id = _editResiId; resiProjects[idx] = data; }
+    showToast('"' + name + '" updated');
+  } else {
+    data.id = 'resi_' + Date.now();
+    resiProjects.push(data);
+    showToast('"' + name + '" added');
+  }
+  saveResiData();
+  document.getElementById('resi-modal').remove();
+  renderResiSchedule();
+}
+
+function deleteResiProject(id) {
+  var p = resiProjects.find(function(r) { return r.id === id; });
+  if (!p || !confirm('Delete "' + p.name + '"?')) return;
+  resiProjects = resiProjects.filter(function(r) { return r.id !== id; });
+  saveResiData();
+  renderResiSchedule();
+  showToast('"' + p.name + '" deleted');
+}
+
+function renderResiSchedule() {
+  var grid = document.getElementById('resi-schedule-grid');
+  if (!grid) return;
+  if (!resiProjects.length) {
+    grid.innerHTML = '<div style="text-align:center;padding:60px 20px;color:var(--muted);"><div style="font-size:40px;margin-bottom:12px;">🏠</div><div style="font-size:14px;margin-bottom:6px;">No residential projects yet</div><div style="font-size:12px;">Click <strong>+ Add Project</strong> to create a drywall schedule</div></div>';
+    return;
+  }
+  var fmtD = function(d) { if (!d) return '—'; var dt = new Date(d + 'T12:00:00'); return dt.toLocaleDateString('en-CA', {month:'short',day:'numeric'}); };
+  var statusColors = { Active:'#3b82f6', Scheduled:'#f5a623', Completed:'#2ecc71', 'On Hold':'#888' };
+  var phaseLabels = [
+    {key:'ins',label:'Ins/IPDS'},{key:'dwipds',label:'DW IPDS'},{key:'sprayfoam',label:'Spray Foam'},
+    {key:'insulation',label:'Insulation'},{key:'delivery',label:'DW Delivery'},{key:'drywall',label:'Drywall'},
+    {key:'loosefill',label:'Loose Fill'},{key:'taping',label:'Taping'},{key:'texture',label:'Texture/Lvl5'},
+    {key:'sanding',label:'Sanding'},{key:'cleaning',label:'Cleaning'},{key:'touchups',label:'Touch Ups'}
+  ];
+
+  grid.innerHTML = '<div style="overflow-x:auto;">' +
+    '<table style="width:100%;border-collapse:collapse;font-size:12px;min-width:1200px;">' +
+    '<thead><tr style="background:var(--surface2);border-bottom:2px solid var(--border);">' +
+      '<th style="padding:8px 10px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);position:sticky;left:0;background:var(--surface2);z-index:2;min-width:180px;">Project</th>' +
+      '<th style="padding:8px 10px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);min-width:80px;">Status</th>' +
+      '<th style="padding:8px 10px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);min-width:100px;">Builder</th>' +
+      phaseLabels.map(function(ph) { return '<th style="padding:8px 10px;text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);min-width:80px;">' + ph.label + '</th>'; }).join('') +
+      '<th style="padding:8px 6px;width:60px;"></th>' +
+    '</tr></thead><tbody>' +
+    resiProjects.map(function(p) {
+      var sc = statusColors[p.status] || '#888';
+      var dates = p.dates || {};
+      return '<tr style="border-bottom:1px solid var(--border);transition:background 0.12s;" onmouseenter="this.style.background=\'rgba(255,255,255,0.02)\'" onmouseleave="this.style.background=\'transparent\'">' +
+        '<td style="padding:10px;position:sticky;left:0;background:var(--bg);z-index:1;"><div style="font-weight:600;color:var(--text);margin-bottom:2px;">' + p.name + '</div><div style="font-size:10px;color:var(--muted);">' + (p.person || '') + (p.dwSqft ? ' · ' + p.dwSqft + ' sqft' : '') + '</div></td>' +
+        '<td style="padding:10px;"><span style="font-size:10px;padding:3px 8px;border-radius:10px;font-weight:700;background:' + sc + '20;color:' + sc + ';">' + p.status + '</span></td>' +
+        '<td style="padding:10px;color:var(--muted);">' + (p.builder || '—') + '</td>' +
+        phaseLabels.map(function(ph) {
+          var v = dates[ph.key];
+          var today = new Date().toISOString().split('T')[0];
+          var isPast = v && v < today;
+          var isToday = v && v === today;
+          var color = isToday ? 'var(--accent)' : (isPast ? 'var(--muted)' : 'var(--text)');
+          var weight = isToday ? '700' : '400';
+          return '<td style="padding:10px;text-align:center;font-size:11px;font-family:DM Mono,monospace;color:' + color + ';font-weight:' + weight + ';">' + (v ? fmtD(v) : '—') + '</td>';
+        }).join('') +
+        '<td style="padding:10px;"><div style="display:flex;gap:4px;">' +
+          '<span style="cursor:pointer;font-size:12px;" onclick="openEditResiModal(\'' + p.id + '\')" title="Edit">✏️</span>' +
+          '<span style="cursor:pointer;font-size:12px;" onclick="exportResiPDF(\'' + p.id + '\')" title="Export PDF">⬇</span>' +
+          '<span style="cursor:pointer;font-size:12px;color:var(--lost);" onclick="deleteResiProject(\'' + p.id + '\')" title="Delete">🗑</span>' +
+        '</div></td>' +
+      '</tr>';
+    }).join('') +
+    '</tbody></table></div>';
+}
+
+function exportResiPDF(id) {
+  var p = resiProjects.find(function(r) { return r.id === id; });
+  if (!p) return;
+  var dates = p.dates || {};
+  var fmtD = function(d) { if (!d) return '—'; return new Date(d + 'T12:00:00').toLocaleDateString('en-CA', {month:'short',day:'numeric',year:'numeric'}); };
+  var phases = [
+    {key:'ins',label:'Ins / IPDS'},{key:'dwipds',label:'DW IPDS / Count'},{key:'sprayfoam',label:'Spray Foam'},
+    {key:'insulation',label:'Insulation'},{key:'delivery',label:'DW Delivery'},{key:'drywall',label:'Drywall'},
+    {key:'loosefill',label:'Loose Fill'},{key:'taping',label:'Taping'},{key:'texture',label:'Texture / Lvl 5'},
+    {key:'sanding',label:'Sanding'},{key:'cleaning',label:'Cleaning'},{key:'touchups',label:'Touch Ups'}
+  ];
+  var rows = phases.map(function(ph,i) {
+    var bg = i % 2 === 0 ? '#fff' : '#f8f9fa';
+    return '<tr style="background:' + bg + ';"><td style="border:1px solid #d0d0d0;padding:8px 12px;font-weight:600;font-size:10pt;">' + ph.label + '</td><td style="border:1px solid #d0d0d0;padding:8px 12px;text-align:center;font-family:Courier New,monospace;font-size:10pt;">' + fmtD(dates[ph.key]) + '</td></tr>';
+  }).join('');
+
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Schedule - ' + p.name + '</title>' +
+    '<style>*{box-sizing:border-box;margin:0;padding:0;}@page{size:letter;margin:15mm;}body{font-family:Segoe UI,Arial,sans-serif;font-size:10pt;color:#1a1a1a;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}table{border-collapse:collapse;}</style></head><body>' +
+    '<div style="background:#1a1a1a;color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;">' +
+      '<div style="display:flex;align-items:center;gap:14px;">' +
+        (myCompany.logoDataUrl ? '<img src="' + myCompany.logoDataUrl + '" style="height:40px;object-fit:contain;">' : '') +
+        '<div><div style="font-size:14pt;font-weight:700;">' + (myCompany.name || '') + '</div><div style="font-size:8pt;color:#ccc;">' + (myCompany.phone || '') + ' · ' + (myCompany.email || '') + '</div></div>' +
+      '</div>' +
+      '<div style="text-align:right;"><div style="font-size:8pt;color:#ccc;">DRYWALL SCHEDULE</div></div>' +
+    '</div>' +
+    '<div style="background:#f5a623;color:#000;text-align:center;font-size:13pt;font-weight:700;letter-spacing:2px;padding:8px 0;">RESIDENTIAL DRYWALL SCHEDULE</div>' +
+    '<div style="border:1px solid #d0d0d0;border-top:none;padding:14px 18px;margin-bottom:14px;">' +
+      '<div style="font-size:14pt;font-weight:700;margin-bottom:6px;">' + p.name + '</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:9pt;color:#555;">' +
+        '<div><strong>Contact:</strong> ' + (p.person || '—') + '</div>' +
+        '<div><strong>Builder:</strong> ' + (p.builder || '—') + '</div>' +
+        '<div><strong>Status:</strong> ' + (p.status || '—') + '</div>' +
+        '<div><strong>Lockbox:</strong> ' + (p.lockbox || '—') + '</div>' +
+        '<div><strong>Drywall Sqft:</strong> ' + (p.dwSqft || '—') + '</div>' +
+        '<div><strong>Garage Sqft:</strong> ' + (p.garageSqft || '—') + '</div>' +
+        '<div><strong>Floor Sqft:</strong> ' + (p.floorSqft || '—') + '</div>' +
+        '<div><strong>Garage Floor Sqft:</strong> ' + (p.garageFloorSqft || '—') + '</div>' +
+      '</div>' +
+      (p.specs ? '<div style="margin-top:8px;font-size:9pt;color:#333;background:#f5f5f5;padding:8px 10px;border-radius:4px;"><strong>Specs:</strong> ' + p.specs + '</div>' : '') +
+    '</div>' +
+    '<table style="width:100%;"><thead><tr style="background:#2a2a2a;color:#fff;"><th style="padding:10px 14px;text-align:left;font-size:9pt;text-transform:uppercase;letter-spacing:1px;">Phase</th><th style="padding:10px 14px;text-align:center;font-size:9pt;text-transform:uppercase;letter-spacing:1px;">Scheduled Date</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+    '<div style="margin-top:20px;border-top:2px solid #f5a623;padding-top:8px;text-align:center;font-size:8pt;color:#888;">' + (myCompany.name || '') + ' · ' + (myCompany.phone || '') + ' · ' + (myCompany.email || '') + '</div>' +
+    '<scr' + 'ipt>document.title="Schedule - ' + p.name.replace(/"/g,'') + '";window.onafterprint=function(){window.close();};setTimeout(function(){window.print();},500);<\/scr' + 'ipt></body></html>';
+
+  var blob = new Blob([html], { type: 'text/html' });
+  var w = window.open(URL.createObjectURL(blob), '_blank');
+  if (w) showToast('Print dialog opening');
+  else showToast('Popup blocked');
 }
 
 function initBillingPage() {
