@@ -1568,15 +1568,6 @@
           <div id="billing-history-list"></div>
         </div>
 
-        <!-- Holdback Tracker -->
-        <div id="holdback-tracker" style="display:none;margin-bottom:20px;">
-          <div class="section-header" style="margin-bottom:10px;">
-            <div class="section-label">📋 Holdback Tracker</div>
-            <button class="btn btn-ghost btn-sm" onclick="exportHoldbackPDF()" style="font-size:11px;">⬇ Export Holdback PDF</button>
-          </div>
-          <div id="holdback-tracker-content"></div>
-        </div>
-
         <!-- Claim Form (hidden until project selected) -->
         <div id="billing-form" style="display:none;">
 
@@ -1665,6 +1656,15 @@
 
           <!-- Grand Total Summary -->
           <div id="claim-grand-summary" style="background:var(--surface);border:1px solid var(--accent);border-radius:8px;padding:20px;margin-top:16px;display:none;"></div>
+
+          <!-- Holdback Tracker -->
+          <div id="holdback-tracker" style="display:none;margin-top:28px;margin-bottom:20px;">
+            <div class="section-header" style="margin-bottom:10px;">
+              <div class="section-label">📋 Holdback Tracker</div>
+              <button class="btn btn-ghost btn-sm" onclick="exportHoldbackPDF()" style="font-size:11px;">⬇ Export Holdback PDF</button>
+            </div>
+            <div id="holdback-tracker-content"></div>
+          </div>
 
         </div>
       </div>
