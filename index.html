@@ -2861,8 +2861,9 @@ async function openProposalModal(bidId) {
   // ── CHECK SUPABASE FIRST for a saved quote ──
   if (bidId && window._supabase) {
     try {
-      const { data: quotes } = await window._supabase.from('saved_quotes').select('*').eq('bid_id', bidId).order('updated_at', { ascending: false });
-      if (quotes && quotes.length > 0 && quotes[0].quote_data) {
+      const { data: quotes, error: qErr } = await window._supabase.from('saved_quotes').select('*').eq('bid_id', bidId).order('updated_at', { ascending: false });
+      if (qErr) { console.error('Load saved quote error:', qErr); }
+      if (!qErr && quotes && quotes.length > 0 && quotes[0].quote_data) {
         loadQuoteFormState(quotes[0].quote_data);
         document.getElementById('proposal-modal-title').textContent = 'Proposal Builder';
         document.getElementById('proposal-modal-sub').textContent = b ? `For: ${b.name}` : '';
@@ -4962,13 +4963,14 @@ async function saveCurrentQuote() {
     // Check if quote already exists for this bid + quoteNum
     let existing = null;
     if (bidId && state.quoteNum) {
-      const { data } = await window._supabase.from('saved_quotes')
+      const { data, error: selErr } = await window._supabase.from('saved_quotes')
         .select('id').eq('bid_id', bidId).eq('quote_num', state.quoteNum).limit(1);
+      if (selErr) { console.error('Quote lookup error:', selErr); }
       existing = data && data.length ? data[0] : null;
     }
     
     if (existing) {
-      await window._supabase.from('saved_quotes').update({
+      const { error: updErr } = await window._supabase.from('saved_quotes').update({
         quote_data: state,
         quote_label: label,
         quote_num: state.quoteNum || '',
@@ -4976,14 +4978,16 @@ async function saveCurrentQuote() {
         bid_id: bidId,
         updated_at: new Date().toISOString()
       }).eq('id', existing.id);
+      if (updErr) { console.error('Quote update error:', updErr); showToast('Error: ' + updErr.message); return; }
     } else {
-      await window._supabase.from('saved_quotes').insert({
+      const { data: insData, error: insErr } = await window._supabase.from('saved_quotes').insert({
         quote_data: state,
         quote_label: label,
         quote_num: state.quoteNum || '',
         project: state.project || '',
         bid_id: bidId
-      });
+      }).select('id').single();
+      if (insErr) { console.error('Quote insert error:', insErr); showToast('Error: ' + insErr.message); return; }
     }
     showToast(`Quote "${label}" saved ✓`);
     renderSavedQuotesList();
@@ -4997,9 +5001,10 @@ async function loadSavedQuotesList() {
   try {
     let query = window._supabase.from('saved_quotes').select('*').order('updated_at', { ascending: false });
     if (currentProposalBidId) query = query.eq('bid_id', currentProposalBidId);
-    const { data } = await query;
+    const { data, error } = await query;
+    if (error) { console.error('Load quotes error:', error); return []; }
     return data || [];
-  } catch(e) { return []; }
+  } catch(e) { console.error('Load quotes exception:', e); return []; }
 }
 
 async function deleteQuoteById(id) {
