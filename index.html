@@ -1583,7 +1583,7 @@
               <div class="form-group"><label class="form-label">Claim #</label><input type="number" class="form-input" id="claim-number" value="1" min="1" onchange="updateClaimPreview()"></div>
               <div class="form-group"><label class="form-label">Date</label><input type="date" class="form-input" id="claim-date" onchange="updateClaimPreview()"></div>
               <div class="form-group"><label class="form-label">Subcontract PO #</label><input type="text" class="form-input" id="claim-po"></div>
-              <div class="form-group"><label class="form-label">Invoice # (QK)</label><input type="text" class="form-input" id="claim-invoice-num" placeholder="e.g. INV-2026-001"></div>
+              <div class="form-group"><label class="form-label">Invoice #</label><input type="text" class="form-input" id="claim-invoice-num" placeholder="e.g. INV-2026-001"></div>
               <div class="form-group"><label class="form-label">Contract Amount ($)</label><input type="number" class="form-input" id="claim-contract-amount" step="0.01" onchange="updateClaimPreview()"></div>
               <div class="form-group">
                 <label class="form-label">Holdback %</label>
@@ -6200,7 +6200,7 @@ function renderHoldbackTracker() {
     '<thead><tr style="background:var(--surface2);border-bottom:2px solid var(--border);">' +
       '<th style="padding:10px 12px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);">Claim</th>' +
       '<th style="padding:10px 12px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);">Date</th>' +
-      '<th style="padding:10px 12px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);">Invoice # (QK)</th>' +
+      '<th style="padding:10px 12px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);">Invoice #</th>' +
       '<th style="padding:10px 12px;text-align:right;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);">Claim Amount</th>' +
       '<th style="padding:10px 12px;text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);">Holdback %</th>' +
       '<th style="padding:10px 12px;text-align:right;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);">Holdback Amount</th>' +
@@ -6311,7 +6311,7 @@ function exportHoldbackPDF() {
     '<thead><tr style="background:#2a2a2a;color:#fff;">' +
       '<th style="padding:10px 12px;text-align:center;font-size:8pt;text-transform:uppercase;letter-spacing:0.5px;border:1px solid #2a2a2a;width:60px;">Claim</th>' +
       '<th style="padding:10px 12px;text-align:left;font-size:8pt;text-transform:uppercase;letter-spacing:0.5px;border:1px solid #2a2a2a;">Date</th>' +
-      '<th style="padding:10px 12px;text-align:left;font-size:8pt;text-transform:uppercase;letter-spacing:0.5px;border:1px solid #2a2a2a;">Invoice # (QK)</th>' +
+      '<th style="padding:10px 12px;text-align:left;font-size:8pt;text-transform:uppercase;letter-spacing:0.5px;border:1px solid #2a2a2a;">Invoice #</th>' +
       '<th style="padding:10px 12px;text-align:right;font-size:8pt;text-transform:uppercase;letter-spacing:0.5px;border:1px solid #2a2a2a;width:130px;">Claim Amount</th>' +
       '<th style="padding:10px 12px;text-align:center;font-size:8pt;text-transform:uppercase;letter-spacing:0.5px;border:1px solid #2a2a2a;width:70px;">HB %</th>' +
       '<th style="padding:10px 12px;text-align:right;font-size:8pt;text-transform:uppercase;letter-spacing:0.5px;border:1px solid #2a2a2a;width:140px;">Holdback Amount</th>' +
