@@ -1568,6 +1568,15 @@
           <div id="billing-history-list"></div>
         </div>
 
+        <!-- Holdback Tracker -->
+        <div id="holdback-tracker" style="display:none;margin-bottom:20px;">
+          <div class="section-header" style="margin-bottom:10px;">
+            <div class="section-label">📋 Holdback Tracker</div>
+            <button class="btn btn-ghost btn-sm" onclick="exportHoldbackPDF()" style="font-size:11px;">⬇ Export Holdback PDF</button>
+          </div>
+          <div id="holdback-tracker-content"></div>
+        </div>
+
         <!-- Claim Form (hidden until project selected) -->
         <div id="billing-form" style="display:none;">
 
@@ -1583,6 +1592,7 @@
               <div class="form-group"><label class="form-label">Claim #</label><input type="number" class="form-input" id="claim-number" value="1" min="1" onchange="updateClaimPreview()"></div>
               <div class="form-group"><label class="form-label">Date</label><input type="date" class="form-input" id="claim-date" onchange="updateClaimPreview()"></div>
               <div class="form-group"><label class="form-label">Subcontract PO #</label><input type="text" class="form-input" id="claim-po"></div>
+              <div class="form-group"><label class="form-label">Invoice # (QK)</label><input type="text" class="form-input" id="claim-invoice-num" placeholder="e.g. INV-2026-001"></div>
               <div class="form-group"><label class="form-label">Contract Amount ($)</label><input type="number" class="form-input" id="claim-contract-amount" step="0.01" onchange="updateClaimPreview()"></div>
               <div class="form-group">
                 <label class="form-label">Holdback %</label>
@@ -2844,50 +2854,56 @@ function showYearBids(year, status) {
   panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 // ============ PROPOSAL MODAL ============
-function openProposalModal(bidId) {
+async function openProposalModal(bidId) {
   const b = bids.find(x => x.id === bidId);
   currentProposalBidId = bidId;
 
-  // Check for a previously saved quote for this bid
+  // ── CHECK SUPABASE FIRST for a saved quote ──
+  if (bidId && window._supabase) {
+    try {
+      const { data: quotes } = await window._supabase.from('saved_quotes').select('*').eq('bid_id', bidId).order('updated_at', { ascending: false });
+      if (quotes && quotes.length > 0 && quotes[0].quote_data) {
+        loadQuoteFormState(quotes[0].quote_data);
+        document.getElementById('proposal-modal-title').textContent = 'Proposal Builder';
+        document.getElementById('proposal-modal-sub').textContent = b ? `For: ${b.name}` : '';
+        const banner = document.getElementById('proposal-bid-banner');
+        const bannerText = document.getElementById('proposal-bid-banner-text');
+        if (b) { banner.style.display = 'flex'; bannerText.textContent = `Loaded saved quote · ${quotes[0].quote_label || b.name}`; }
+        switchProposalPage(1);
+        document.getElementById('proposal-modal').classList.add('open');
+        renderSavedQuotesList();
+        showToast('Loaded saved quote');
+        return;
+      }
+    } catch(e) { console.error('Error loading saved quotes from Supabase:', e); }
+  }
+
+  // ── Fallback: check localStorage ──
   const savedQuotes = getSavedQuotes();
   const existingQuote = savedQuotes.find(q => q.bidId === bidId);
-  
   if (existingQuote) {
-    // Load the saved quote
     loadQuoteFormState(existingQuote);
-    
-    // Modal title
     document.getElementById('proposal-modal-title').textContent = 'Proposal Builder';
     document.getElementById('proposal-modal-sub').textContent = b ? `For: ${b.name}` : '';
-    
-    // Show banner
     const banner = document.getElementById('proposal-bid-banner');
     const bannerText = document.getElementById('proposal-bid-banner-text');
-    if (b) {
-      banner.style.display = 'flex';
-      bannerText.textContent = `Loaded saved quote · ${existingQuote.quoteNum || b.name}`;
-    }
-    
+    if (b) { banner.style.display = 'flex'; bannerText.textContent = `Loaded saved quote · ${existingQuote.quoteNum || b.name}`; }
     switchProposalPage(1);
     document.getElementById('proposal-modal').classList.add('open');
     showToast('Loaded saved quote');
     return;
   }
 
-  // No saved quote — start fresh from bid data
+  // ── No saved quote — start fresh from bid data ──
   const linkedCo = b?.contactCompanyId ? companies.find(c => c.id === b.contactCompanyId) : companies.find(c => c.name === b?.company);
   const linkedPerson = linkedCo && b?.contactPersonId
     ? linkedCo.persons.find(p => p.id === b.contactPersonId)
     : linkedCo?.persons.find(p => `${p.first} ${p.last}` === b?.contact);
-
-  // If no linked person found by ID, try matching by contact_name on the bid
   const fallbackPerson = !linkedPerson && linkedCo ? linkedCo.persons.find(p => `${p.first} ${p.last}` === b?.contact_name) : null;
   const person = linkedPerson || fallbackPerson || (linkedCo?.persons?.length === 1 ? linkedCo.persons[0] : null);
 
-  // Pre-fill from bid + linked contact data
   document.getElementById('p-project').value = b ? b.name : '';
   document.getElementById('p-client-company').value = linkedCo?.name || b?.company || '';
-  // Company email/phone/address: use company data first, fall back to contact person data
   document.getElementById('p-client-company-email').value = linkedCo?.email || person?.email || '';
   document.getElementById('p-client-company-phone').value = linkedCo?.phone || person?.phone || '';
   document.getElementById('p-client-company-address').value = linkedCo?.address || '';
@@ -2904,7 +2920,6 @@ function openProposalModal(bidId) {
   document.getElementById('p-terms').value = '';
   document.getElementById('p-quote-num').value = '';
 
-  // Seed a default category from bid value if available
   catNextId = 1;
   catLiNextId = 100;
   proposalCategories = [
@@ -2917,43 +2932,26 @@ function openProposalModal(bidId) {
     }
   ];
 
-  // Modal title
   document.getElementById('proposal-modal-title').textContent = 'Proposal Builder';
   document.getElementById('proposal-modal-sub').textContent = b ? `For: ${b.name}` : '';
-
-  // Show banner
   const banner = document.getElementById('proposal-bid-banner');
   const bannerText = document.getElementById('proposal-bid-banner-text');
   if (b) {
     banner.style.display = 'flex';
     bannerText.textContent = `Pre-filled from bid · ${b.contact}${b.company ? ' · ' + b.company : ''}`;
-  } else {
-    banner.style.display = 'none';
-  }
+  } else { banner.style.display = 'none'; }
 
   renderCategoriesUI();
   updatePreview();
 
-  // Reset page 2 from company defaults
   document.getElementById('p2-inclusions').value = myCompany.inclusions;
   document.getElementById('p2-exclusions').value = myCompany.exclusions;
   document.getElementById('p2-hourly').value = myCompany.hourlyRates;
   document.getElementById('p2-terms').value = myCompany.termsAndConditions;
 
-  // Always open on page 1
   switchProposalPage(1);
   document.getElementById('proposal-modal').classList.add('open');
-  
-  // Auto-load latest saved quote for this bid (if exists)
-  if (bidId) {
-    loadSavedQuotesList().then(function(quotes) {
-      if (quotes.length > 0) {
-        loadQuoteFormState(quotes[0].quote_data);
-        showToast('Loaded latest saved quote');
-      }
-      renderSavedQuotesList();
-    });
-  }
+  renderSavedQuotesList();
 }
 
 function closeProposalModal() {
@@ -6060,6 +6058,7 @@ function clearBillingProject() {
   document.getElementById('billing-project-dropdown').style.display = 'none';
   document.getElementById('billing-form').style.display = 'none';
   document.getElementById('billing-history').style.display = 'none';
+  document.getElementById('holdback-tracker').style.display = 'none';
   currentBillingBidId = null;
   currentClaimDbId = null;
 }
@@ -6093,6 +6092,7 @@ async function loadBillingProject() {
   } catch(e) { claimSavedClaims = []; }
   
   renderClaimHistory();
+  renderHoldbackTracker();
   
   if (claimSavedClaims.length > 0) {
     // Load the latest claim
@@ -6137,6 +6137,219 @@ function loadClaimById(id) {
   if (claim) loadClaimFromSaved(claim);
 }
 
+// ============ HOLDBACK TRACKER ============
+function renderHoldbackTracker() {
+  var tracker = document.getElementById('holdback-tracker');
+  var content = document.getElementById('holdback-tracker-content');
+  if (!tracker || !content) return;
+
+  if (!claimSavedClaims.length) {
+    tracker.style.display = 'none';
+    return;
+  }
+
+  tracker.style.display = 'block';
+  var bid = bids.find(function(b) { return b.id === currentBillingBidId; });
+  var projectName = bid ? bid.name : '';
+
+  var totalHoldback = 0;
+  var rows = claimSavedClaims.map(function(c) {
+    var lines = c.lines || [];
+    var coLinesArr = c.co_lines || [];
+    // SOV this claim
+    var sovThisClaim = lines.reduce(function(a, l) {
+      var completed = (l.value || 0) * ((l.pctComplete || 0) / 100);
+      return a + Math.max(0, completed - (l.prevInvoiced || 0));
+    }, 0);
+    // CO this claim
+    var coThisClaim = coLinesArr.reduce(function(a, l) {
+      var sv = (l.type === 'Credit' || l.type === 'Back Charge') ? -Math.abs(l.value || 0) : Math.abs(l.value || 0);
+      var completed = sv * ((l.pctComplete || 0) / 100);
+      return completed - (l.prevInvoiced || 0);
+    }, 0);
+    var grandThisClaim = sovThisClaim + coThisClaim;
+    var hbPct = c.holdback_pct != null ? c.holdback_pct : 10;
+    var holdbackAmt = grandThisClaim * (hbPct / 100);
+    totalHoldback += holdbackAmt;
+
+    var dateStr = c.claim_date ? new Date(c.claim_date + 'T12:00:00').toLocaleDateString('en-CA', {month:'short', day:'numeric', year:'numeric'}) : '—';
+    var invoiceNum = c.invoice_number || '—';
+
+    return '<tr style="border-bottom:1px solid var(--border);">' +
+      '<td style="padding:10px 12px;font-weight:600;">Claim #' + c.claim_number + '</td>' +
+      '<td style="padding:10px 12px;color:var(--muted);font-size:12px;">' + dateStr + '</td>' +
+      '<td style="padding:10px 12px;font-size:12px;">' +
+        '<input type="text" class="form-input" value="' + (c.invoice_number || '').replace(/"/g,'&quot;') + '" ' +
+        'style="padding:4px 8px;font-size:12px;width:140px;background:var(--surface2);" ' +
+        'placeholder="Enter invoice #" ' +
+        'onchange="updateClaimInvoiceNum(' + c.id + ',this.value)">' +
+      '</td>' +
+      '<td style="padding:10px 12px;text-align:right;font-family:DM Mono,monospace;font-size:12px;">' + fmtFull(Math.round(grandThisClaim * 100) / 100) + '</td>' +
+      '<td style="padding:10px 12px;text-align:center;font-size:12px;">' + hbPct + '%</td>' +
+      '<td style="padding:10px 12px;text-align:right;font-family:DM Mono,monospace;font-size:13px;font-weight:700;color:var(--accent);">' + fmtFull(Math.round(holdbackAmt * 100) / 100) + '</td>' +
+    '</tr>';
+  }).join('');
+
+  content.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;">' +
+    '<table style="width:100%;border-collapse:collapse;">' +
+    '<thead><tr style="background:var(--surface2);border-bottom:2px solid var(--border);">' +
+      '<th style="padding:10px 12px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);">Claim</th>' +
+      '<th style="padding:10px 12px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);">Date</th>' +
+      '<th style="padding:10px 12px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);">Invoice # (QK)</th>' +
+      '<th style="padding:10px 12px;text-align:right;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);">Claim Amount</th>' +
+      '<th style="padding:10px 12px;text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);">Holdback %</th>' +
+      '<th style="padding:10px 12px;text-align:right;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);">Holdback Amount</th>' +
+    '</tr></thead>' +
+    '<tbody>' + rows + '</tbody>' +
+    '<tfoot><tr style="background:var(--surface2);border-top:2px solid var(--border);">' +
+      '<td colspan="5" style="padding:12px;font-weight:700;font-size:13px;">Total Holdback Owing</td>' +
+      '<td style="padding:12px;text-align:right;font-family:DM Mono,monospace;font-size:16px;font-weight:800;color:#2ecc71;">' + fmtFull(Math.round(totalHoldback * 100) / 100) + '</td>' +
+    '</tr></tfoot>' +
+    '</table></div>';
+}
+
+async function updateClaimInvoiceNum(claimId, invoiceNum) {
+  try {
+    await window._supabase.from('progress_claims').update({ invoice_number: invoiceNum }).eq('id', claimId);
+    // Update local array
+    var c = claimSavedClaims.find(function(x) { return x.id === claimId; });
+    if (c) c.invoice_number = invoiceNum;
+    // If this is the currently loaded claim, update the form field too
+    if (claimId === currentClaimDbId) {
+      document.getElementById('claim-invoice-num').value = invoiceNum;
+    }
+    showToast('Invoice # saved');
+  } catch(e) {
+    console.error('Error saving invoice #:', e);
+    showToast('Error saving invoice #');
+  }
+}
+
+function exportHoldbackPDF() {
+  if (!claimSavedClaims.length) { showToast('No claims to export'); return; }
+  var bid = bids.find(function(b) { return b.id === currentBillingBidId; });
+  var projectName = bid ? bid.name : 'Project';
+  var customer = document.getElementById('claim-customer')?.value || '';
+  var contractAmt = parseFloat(document.getElementById('claim-contract-amount')?.value) || 0;
+  var poNum = document.getElementById('claim-po')?.value || '';
+
+  var totalHoldback = 0;
+  var totalClaimAmt = 0;
+  var tableRows = claimSavedClaims.map(function(c, i) {
+    var lines = c.lines || [];
+    var coLinesArr = c.co_lines || [];
+    var sovThisClaim = lines.reduce(function(a, l) {
+      var completed = (l.value || 0) * ((l.pctComplete || 0) / 100);
+      return a + Math.max(0, completed - (l.prevInvoiced || 0));
+    }, 0);
+    var coThisClaim = coLinesArr.reduce(function(a, l) {
+      var sv = (l.type === 'Credit' || l.type === 'Back Charge') ? -Math.abs(l.value || 0) : Math.abs(l.value || 0);
+      var completed = sv * ((l.pctComplete || 0) / 100);
+      return completed - (l.prevInvoiced || 0);
+    }, 0);
+    var grandThisClaim = sovThisClaim + coThisClaim;
+    var hbPct = c.holdback_pct != null ? c.holdback_pct : 10;
+    var holdbackAmt = grandThisClaim * (hbPct / 100);
+    var netPayment = grandThisClaim - holdbackAmt;
+    totalHoldback += holdbackAmt;
+    totalClaimAmt += grandThisClaim;
+
+    var dateStr = c.claim_date ? new Date(c.claim_date + 'T12:00:00').toLocaleDateString('en-CA', {day:'numeric', month:'long', year:'numeric'}) : '—';
+    var invoiceNum = c.invoice_number || '—';
+    var bg = i % 2 === 0 ? '#ffffff' : '#f8f9fa';
+
+    return '<tr style="background:' + bg + ';">' +
+      '<td style="border:1px solid #d0d0d0;padding:8px 12px;text-align:center;font-weight:700;font-size:10pt;">#' + c.claim_number + '</td>' +
+      '<td style="border:1px solid #d0d0d0;padding:8px 12px;font-size:9pt;">' + dateStr + '</td>' +
+      '<td style="border:1px solid #d0d0d0;padding:8px 12px;font-size:9pt;font-weight:600;">' + invoiceNum + '</td>' +
+      '<td style="border:1px solid #d0d0d0;padding:8px 12px;text-align:right;font-family:Courier New,monospace;font-size:9pt;">$  ' + grandThisClaim.toLocaleString('en',{minimumFractionDigits:2}) + '</td>' +
+      '<td style="border:1px solid #d0d0d0;padding:8px 12px;text-align:center;font-size:9pt;">' + hbPct + '%</td>' +
+      '<td style="border:1px solid #d0d0d0;padding:8px 12px;text-align:right;font-family:Courier New,monospace;font-size:10pt;font-weight:700;color:#b45309;">$  ' + holdbackAmt.toLocaleString('en',{minimumFractionDigits:2}) + '</td>' +
+      '<td style="border:1px solid #d0d0d0;padding:8px 12px;text-align:right;font-family:Courier New,monospace;font-size:9pt;">$  ' + netPayment.toLocaleString('en',{minimumFractionDigits:2}) + '</td>' +
+    '</tr>';
+  }).join('');
+
+  var totalNet = totalClaimAmt - totalHoldback;
+
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Holdback Summary - ' + projectName + '</title>' +
+    '<style>' +
+    '* { box-sizing:border-box; margin:0; padding:0; }' +
+    '@page { size:letter landscape; margin:12mm 15mm; }' +
+    'body { font-family: "Segoe UI", Arial, Helvetica, sans-serif; font-size:9pt; color:#1a1a1a; background:#fff; -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }' +
+    'table { border-collapse:collapse; }' +
+    '</style></head><body>' +
+
+    // Header
+    '<div style="background:#1a1a1a;color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;">' +
+      '<div style="display:flex;align-items:center;gap:14px;">' +
+        (myCompany.logoDataUrl ? '<img src="' + myCompany.logoDataUrl + '" style="height:44px;object-fit:contain;">' : '') +
+        '<div><div style="font-size:14pt;font-weight:700;">' + (myCompany.name || '') + '</div>' +
+        '<div style="font-size:8pt;color:#ccc;">' + (myCompany.address || '') + (myCompany.phone ? '  •  ' + myCompany.phone : '') + (myCompany.email ? '  •  ' + myCompany.email : '') + '</div></div>' +
+      '</div>' +
+      '<div style="text-align:right;"><div style="font-size:8pt;color:#ccc;">HOLDBACK SUMMARY</div></div>' +
+    '</div>' +
+
+    '<div style="background:#f5a623;color:#000;text-align:center;font-size:13pt;font-weight:700;letter-spacing:2px;padding:8px 0;">HOLDBACK SUMMARY REPORT</div>' +
+
+    // Project info
+    '<div style="border:1px solid #d0d0d0;border-top:none;padding:14px 18px;margin-bottom:14px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">' +
+      '<div><div style="font-size:8pt;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#555;">Project</div><div style="font-size:12pt;font-weight:700;margin-top:2px;">' + projectName + '</div></div>' +
+      '<div><div style="font-size:8pt;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#555;">Customer</div><div style="font-size:11pt;font-weight:600;margin-top:2px;">' + customer + '</div></div>' +
+      '<div><div style="font-size:8pt;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#555;">Contract Amount</div><div style="font-size:11pt;font-weight:700;margin-top:2px;font-family:Courier New,monospace;">$  ' + contractAmt.toLocaleString('en',{minimumFractionDigits:2}) + '</div></div>' +
+      (poNum ? '<div><div style="font-size:8pt;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#555;">PO Number</div><div style="font-size:11pt;margin-top:2px;">' + poNum + '</div></div>' : '') +
+      '<div><div style="font-size:8pt;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#555;">Total Claims</div><div style="font-size:11pt;font-weight:600;margin-top:2px;">' + claimSavedClaims.length + '</div></div>' +
+      '<div><div style="font-size:8pt;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#555;">Report Date</div><div style="font-size:11pt;margin-top:2px;">' + new Date().toLocaleDateString('en-CA', {day:'numeric', month:'long', year:'numeric'}) + '</div></div>' +
+    '</div>' +
+
+    // Table
+    '<table style="width:100%;">' +
+    '<thead><tr style="background:#2a2a2a;color:#fff;">' +
+      '<th style="padding:10px 12px;text-align:center;font-size:8pt;text-transform:uppercase;letter-spacing:0.5px;border:1px solid #2a2a2a;width:60px;">Claim</th>' +
+      '<th style="padding:10px 12px;text-align:left;font-size:8pt;text-transform:uppercase;letter-spacing:0.5px;border:1px solid #2a2a2a;">Date</th>' +
+      '<th style="padding:10px 12px;text-align:left;font-size:8pt;text-transform:uppercase;letter-spacing:0.5px;border:1px solid #2a2a2a;">Invoice # (QK)</th>' +
+      '<th style="padding:10px 12px;text-align:right;font-size:8pt;text-transform:uppercase;letter-spacing:0.5px;border:1px solid #2a2a2a;width:130px;">Claim Amount</th>' +
+      '<th style="padding:10px 12px;text-align:center;font-size:8pt;text-transform:uppercase;letter-spacing:0.5px;border:1px solid #2a2a2a;width:70px;">HB %</th>' +
+      '<th style="padding:10px 12px;text-align:right;font-size:8pt;text-transform:uppercase;letter-spacing:0.5px;border:1px solid #2a2a2a;width:140px;">Holdback Amount</th>' +
+      '<th style="padding:10px 12px;text-align:right;font-size:8pt;text-transform:uppercase;letter-spacing:0.5px;border:1px solid #2a2a2a;width:130px;">Net Payment</th>' +
+    '</tr></thead>' +
+    '<tbody>' + tableRows + '</tbody>' +
+    '<tfoot>' +
+    '<tr style="background:#f0f0f0;font-weight:700;">' +
+      '<td colspan="3" style="border:1px solid #d0d0d0;padding:10px 12px;font-size:10pt;">TOTALS</td>' +
+      '<td style="border:1px solid #d0d0d0;padding:10px 12px;text-align:right;font-family:Courier New,monospace;font-size:10pt;">$  ' + totalClaimAmt.toLocaleString('en',{minimumFractionDigits:2}) + '</td>' +
+      '<td style="border:1px solid #d0d0d0;padding:10px 12px;"></td>' +
+      '<td style="border:1px solid #d0d0d0;padding:10px 12px;text-align:right;font-family:Courier New,monospace;font-size:12pt;color:#b45309;font-weight:800;">$  ' + totalHoldback.toLocaleString('en',{minimumFractionDigits:2}) + '</td>' +
+      '<td style="border:1px solid #d0d0d0;padding:10px 12px;text-align:right;font-family:Courier New,monospace;font-size:10pt;">$  ' + totalNet.toLocaleString('en',{minimumFractionDigits:2}) + '</td>' +
+    '</tr>' +
+    '</tfoot></table>' +
+
+    // Summary box
+    '<div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border:1px solid #d0d0d0;">' +
+      '<div style="padding:14px 18px;text-align:center;border-right:1px solid #d0d0d0;">' +
+        '<div style="font-size:7pt;text-transform:uppercase;letter-spacing:1px;color:#888;margin-bottom:4px;">Total Billed</div>' +
+        '<div style="font-size:16pt;font-weight:700;font-family:Courier New,monospace;">$  ' + totalClaimAmt.toLocaleString('en',{minimumFractionDigits:2}) + '</div></div>' +
+      '<div style="padding:14px 18px;text-align:center;border-right:1px solid #d0d0d0;background:#fff8e1;">' +
+        '<div style="font-size:7pt;text-transform:uppercase;letter-spacing:1px;color:#888;margin-bottom:4px;">Total Holdback Owing</div>' +
+        '<div style="font-size:16pt;font-weight:800;font-family:Courier New,monospace;color:#b45309;">$  ' + totalHoldback.toLocaleString('en',{minimumFractionDigits:2}) + '</div></div>' +
+      '<div style="padding:14px 18px;text-align:center;background:#f0faf0;">' +
+        '<div style="font-size:7pt;text-transform:uppercase;letter-spacing:1px;color:#888;margin-bottom:4px;">Total Net Paid</div>' +
+        '<div style="font-size:16pt;font-weight:700;font-family:Courier New,monospace;color:#1a8a4a;">$  ' + totalNet.toLocaleString('en',{minimumFractionDigits:2}) + '</div></div>' +
+    '</div>' +
+
+    // Footer
+    '<div style="margin-top:20px;border-top:2px solid #f5a623;padding-top:8px;text-align:center;font-size:8pt;color:#888;">' +
+      (myCompany.name || '') + ' · ' + (myCompany.phone || '') + ' · ' + (myCompany.email || '') +
+    '</div>' +
+
+    '<scr' + 'ipt>document.title="Holdback Summary - ' + projectName.replace(/"/g,'') + '";window.onafterprint=function(){window.close();};setTimeout(function(){window.print();},500);<\/scr' + 'ipt>' +
+    '</body></html>';
+
+  var blob = new Blob([html], { type: 'text/html' });
+  var w = window.open(URL.createObjectURL(blob), '_blank');
+  if (w) showToast('Holdback PDF — Print dialog opening');
+  else showToast('Popup blocked — please allow popups');
+}
+
 function loadClaimFromSaved(claim) {
   currentClaimDbId = claim.id;
   
@@ -6148,6 +6361,7 @@ function loadClaimFromSaved(claim) {
   document.getElementById('claim-number').value = claim.claim_number || 1;
   document.getElementById('claim-date').value = claim.claim_date || '';
   document.getElementById('claim-po').value = claim.po_number || '';
+  document.getElementById('claim-invoice-num').value = claim.invoice_number || '';
   document.getElementById('claim-contract-amount').value = claim.contract_amount || 0;
   document.getElementById('claim-holdback-pct').value = claim.holdback_pct || 10;
   
@@ -6193,6 +6407,7 @@ function startNewClaim() {
   
   document.getElementById('claim-number').value = nextNum;
   document.getElementById('claim-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('claim-invoice-num').value = '';
   
   // Carry forward lines from previous claim with updated prevInvoiced
   if (prevLines.length > 0) {
@@ -6246,6 +6461,7 @@ function startNewClaimForBid(bid) {
   document.getElementById('claim-date').value = new Date().toISOString().split('T')[0];
   document.getElementById('claim-number').value = 1;
   document.getElementById('claim-po').value = '';
+  document.getElementById('claim-invoice-num').value = '';
   document.getElementById('claim-project-addr').value = '';
   
   const co = bid.contactCompanyId ? companies.find(c => c.id === bid.contactCompanyId) : companies.find(c => c.name === bid.company);
@@ -6283,6 +6499,7 @@ async function saveClaimToDB() {
     customer_address: document.getElementById('claim-customer-addr').value || '',
     project_address: document.getElementById('claim-project-addr').value || '',
     po_number: document.getElementById('claim-po').value || '',
+    invoice_number: document.getElementById('claim-invoice-num').value || '',
     contract_amount: parseFloat(document.getElementById('claim-contract-amount').value) || 0,
     holdback_pct: isNaN(parseFloat(document.getElementById('claim-holdback-pct').value)) ? 10 : parseFloat(document.getElementById('claim-holdback-pct').value),
     lines: claimLines.map(l => ({ desc: l.desc, value: l.value, pctComplete: l.pctComplete, prevInvoiced: l.prevInvoiced })),
@@ -6303,6 +6520,7 @@ async function saveClaimToDB() {
       }
     }
     renderClaimHistory();
+    renderHoldbackTracker();
     showToast('Claim saved!');
   } catch(e) {
     console.error('Save claim error:', e);
