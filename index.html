@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ConstructBid â Bid Tracker & Proposal Builder</title>
+<title>ConstructBid — Bid Tracker & Proposal Builder</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -511,7 +511,7 @@
   .form-select { cursor: pointer; }
   .form-textarea { resize: vertical; min-height: 80px; }
 
-  /* CONTACTS PAGE â two-panel layout */
+  /* CONTACTS PAGE — two-panel layout */
   .contacts-layout {
     display: grid;
     grid-template-columns: 280px 1fr;
@@ -519,7 +519,7 @@
     overflow: hidden;
   }
 
-  /* LEFT PANEL â company list */
+  /* LEFT PANEL — company list */
   .company-list-panel {
     border-right: 1px solid var(--border);
     display: flex;
@@ -581,7 +581,7 @@
   .company-item-name { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .company-item-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
 
-  /* RIGHT PANEL â company detail */
+  /* RIGHT PANEL — company detail */
   .company-detail-panel {
     display: flex;
     flex-direction: column;
@@ -1189,7 +1189,7 @@
   <!-- Mobile sidebar overlay -->
   <div id="sidebar-overlay" class="sidebar-overlay" onclick="closeMobileSidebar()"></div>
   <!-- Mobile hamburger -->
-  <button class="mobile-hamburger" id="mobile-hamburger" onclick="toggleMobileSidebar()">â°</button>
+  <button class="mobile-hamburger" id="mobile-hamburger" onclick="toggleMobileSidebar()">☰</button>
   <!-- SIDEBAR -->
   <aside class="sidebar" id="app-sidebar">
     <div class="logo">
@@ -1198,28 +1198,28 @@
     </div>
     <nav class="nav">
       <div class="nav-item active" onclick="showPage('dashboard')">
-        <span class="nav-icon">ð</span> Dashboard
+        <span class="nav-icon">📊</span> Dashboard
       </div>
       <div class="nav-item" onclick="showPage('bids')">
-        <span class="nav-icon">ð</span> All Bids
+        <span class="nav-icon">📋</span> All Bids
       </div>
       <div class="nav-item" onclick="showPage('contacts')">
-        <span class="nav-icon">ð¥</span> Contacts
+        <span class="nav-icon">👥</span> Contacts
       </div>
       <div class="nav-item" onclick="showPage('analytics')">
-        <span class="nav-icon">ð</span> Analytics
+        <span class="nav-icon">📈</span> Analytics
       </div>
       <div class="nav-item" onclick="showPage('billing')">
-        <span class="nav-icon">ð°</span> Progress Billing
+        <span class="nav-icon">💰</span> Progress Billing
       </div>
       <div class="nav-item" onclick="showPage('resi')">
-        <span class="nav-icon">ð </span> Resi Schedule
+        <span class="nav-icon">🏠</span> Resi Schedule
       </div>
       <div class="nav-item" onclick="showPage('equipment')">
-        <span class="nav-icon">ðï¸</span> Equipment
+        <span class="nav-icon">🏗️</span> Equipment
       </div>
       <div class="nav-item" onclick="openMyCompanyModal()">
-        <span class="nav-icon">ðï¸</span> My Company
+        <span class="nav-icon">🏗️</span> My Company
       </div>
     </nav>
     <div class="sidebar-footer">
@@ -1248,7 +1248,7 @@
         <div class="stats-row" id="stats-row"></div>
         <div class="section-header">
           <div class="section-label">Estimating Bids</div>
-          <button class="btn btn-ghost btn-sm" onclick="showPage('bids')">View All â</button>
+          <button class="btn btn-ghost btn-sm" onclick="showPage('bids')">View All →</button>
         </div>
         <div class="table-wrap" id="dashboard-table"></div>
       </div>
@@ -1264,7 +1264,7 @@
       </div>
       <div class="content">
         <div class="filter-bar">
-          <input type="text" class="search-input" id="search-input" placeholder="ð  Search projects, contacts..." oninput="renderBidsTable()">
+          <input type="text" class="search-input" id="search-input" placeholder="🔍  Search projects, contacts..." oninput="renderBidsTable()">
           <button class="filter-btn f-all active" onclick="setFilter('all')">All</button>
           <button class="filter-btn f-estimating" onclick="setFilter('estimating')">Estimating</button>
           <button class="filter-btn f-pending" onclick="setFilter('pending')">Pending Approval</button>
@@ -1288,14 +1288,14 @@
         <!-- LEFT: Company list -->
         <div class="company-list-panel">
           <div class="company-list-header">
-            <input type="text" class="company-search" placeholder="ð  Search companies..." oninput="filterCompanies(this.value)">
+            <input type="text" class="company-search" placeholder="🔍  Search companies..." oninput="filterCompanies(this.value)">
           </div>
           <div class="company-list" id="company-list"></div>
         </div>
         <!-- RIGHT: Detail panel -->
         <div class="company-detail-panel" id="company-detail-panel">
           <div class="company-detail-empty">
-            <div style="font-size:48px;">ð¢</div>
+            <div style="font-size:48px;">🏢</div>
             <div style="font-size:14px;">Select a company to view details</div>
             <button class="btn btn-ghost btn-sm" onclick="openAddCompanyModal()">+ Add your first company</button>
           </div>
@@ -1384,7 +1384,7 @@
             <label class="form-label">Photos</label>
             <div id="eq-photos-preview" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;"></div>
             <label style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:12px;color:var(--accent);">
-              ð· Add Photo
+              📷 Add Photo
               <input type="file" id="eq-photo-input" accept="image/*" multiple style="display:none;" onchange="handleEquipPhotos(this)">
             </label>
           </div>
@@ -1408,7 +1408,7 @@
           <div id="equip-deploy-fields">
             <div class="form-group">
               <label class="form-label">Job Site / Project *</label>
-              <input type="text" class="form-input" id="ed-jobsite" placeholder="e.g. Ogesco â De la Montagne" list="ed-jobsite-list">
+              <input type="text" class="form-input" id="ed-jobsite" placeholder="e.g. Ogesco – De la Montagne" list="ed-jobsite-list">
               <datalist id="ed-jobsite-list"></datalist>
             </div>
             <div class="form-grid">
@@ -1438,7 +1438,7 @@
             <div class="form-group">
               <label class="form-label">Photo (on pickup)</label>
               <label style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:12px;color:var(--accent);">
-                ð· Add Photo
+                📷 Add Photo
                 <input type="file" id="ed-photo-input" accept="image/*" style="display:none;" onchange="handleDeployPhoto(this)">
               </label>
               <div id="ed-photo-preview" style="margin-top:8px;"></div>
@@ -1471,7 +1471,7 @@
             <div class="form-group">
               <label class="form-label">Photo (on return)</label>
               <label style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:12px;color:var(--accent);">
-                ð· Add Photo
+                📷 Add Photo
                 <input type="file" id="ed-return-photo-input" accept="image/*" style="display:none;" onchange="handleReturnPhoto(this)">
               </label>
               <div id="ed-return-photo-preview" style="margin-top:8px;"></div>
@@ -1509,8 +1509,8 @@
       <div class="topbar">
         <div class="page-title">Progress Billing</div>
         <div class="topbar-actions">
-          <button class="btn btn-primary" onclick="saveClaimToDB()" style="font-size:12px;">ð¾ Save Claim</button>
-          <button class="btn btn-ghost" onclick="exportClaimPDF()" style="font-size:12px;">â¬ Export PDF</button>
+          <button class="btn btn-primary" onclick="saveClaimToDB()" style="font-size:12px;">💾 Save Claim</button>
+          <button class="btn btn-ghost" onclick="exportClaimPDF()" style="font-size:12px;">⬇ Export PDF</button>
         </div>
       </div>
       <div class="content" style="max-width:1200px;">
@@ -1520,19 +1520,19 @@
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px;margin-bottom:20px;">
             <div id="bd-total-contracts" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center;">
               <div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:4px;">Active Projects</div>
-              <div style="font-size:22px;font-weight:700;">â</div>
+              <div style="font-size:22px;font-weight:700;">—</div>
             </div>
             <div id="bd-total-value" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center;">
               <div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:4px;">Total Contract Value</div>
-              <div style="font-size:22px;font-weight:700;">â</div>
+              <div style="font-size:22px;font-weight:700;">—</div>
             </div>
             <div id="bd-total-billed" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center;">
               <div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:4px;">Total Billed</div>
-              <div style="font-size:22px;font-weight:700;color:var(--accent);">â</div>
+              <div style="font-size:22px;font-weight:700;color:var(--accent);">—</div>
             </div>
             <div id="bd-total-remaining" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center;">
               <div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:4px;">Remaining to Bill</div>
-              <div style="font-size:22px;font-weight:700;color:#2ecc71;">â</div>
+              <div style="font-size:22px;font-weight:700;color:#2ecc71;">—</div>
             </div>
           </div>
           <div class="section-header" style="margin-bottom:10px;">
@@ -1547,15 +1547,15 @@
         <div style="margin-bottom:20px;">
           <label class="form-label">Select Project (Won Bids)</label>
           <div style="position:relative;">
-            <input type="text" id="billing-project-search" class="form-input" placeholder="ð Search projects..." style="width:100%;font-size:13px;margin-bottom:4px;" oninput="filterBillingProjects()" onfocus="document.getElementById('billing-project-dropdown').style.display='block'" autocomplete="off">
+            <input type="text" id="billing-project-search" class="form-input" placeholder="🔍 Search projects..." style="width:100%;font-size:13px;margin-bottom:4px;" oninput="filterBillingProjects()" onfocus="document.getElementById('billing-project-dropdown').style.display='block'" autocomplete="off">
             <div id="billing-project-selected" style="display:none;padding:8px 12px;background:var(--surface2);border:1px solid var(--accent);border-radius:6px;margin-bottom:4px;cursor:pointer;" onclick="clearBillingProject()">
               <span id="billing-project-selected-name" style="font-weight:600;"></span>
-              <span style="float:right;color:var(--muted);font-size:12px;">â change</span>
+              <span style="float:right;color:var(--muted);font-size:12px;">✕ change</span>
             </div>
             <div id="billing-project-dropdown" style="display:none;position:absolute;z-index:100;width:100%;max-height:250px;overflow-y:auto;background:var(--surface);border:1px solid var(--border);border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.3);"></div>
           </div>
           <select id="billing-project-select" style="display:none;" onchange="loadBillingProject()">
-            <option value="">â Select a project â</option>
+            <option value="">— Select a project —</option>
           </select>
         </div>
 
@@ -1660,8 +1660,8 @@
           <!-- Holdback Tracker -->
           <div id="holdback-tracker" style="display:none;margin-top:28px;margin-bottom:20px;">
             <div class="section-header" style="margin-bottom:10px;">
-              <div class="section-label">ð Holdback Tracker</div>
-              <button class="btn btn-ghost btn-sm" onclick="exportHoldbackPDF()" style="font-size:11px;">â¬ Export Holdback PDF</button>
+              <div class="section-label">📋 Holdback Tracker</div>
+              <button class="btn btn-ghost btn-sm" onclick="exportHoldbackPDF()" style="font-size:11px;">⬇ Export Holdback PDF</button>
             </div>
             <div id="holdback-tracker-content"></div>
           </div>
@@ -1673,7 +1673,7 @@
     <!-- RESI SCHEDULE PAGE -->
     <div id="page-resi" class="page">
       <div class="topbar">
-        <div class="page-title">ð  Resi Schedule</div>
+        <div class="page-title">🏠 Resi Schedule</div>
         <div class="topbar-actions">
           <button class="btn btn-primary" onclick="openAddResiModal()">+ Add Project</button>
         </div>
@@ -1691,7 +1691,7 @@
   <div class="modal">
     <div class="modal-header">
       <div class="modal-title" id="bid-modal-title">New Bid</div>
-      <button class="modal-close" onclick="closeBidModal()">â</button>
+      <button class="modal-close" onclick="closeBidModal()">✕</button>
     </div>
     <div class="modal-body">
       <div class="form-grid">
@@ -1717,7 +1717,7 @@
         <div class="form-group form-full">
           <label class="form-label">Company</label>
           <select class="form-select" id="bid-company-select" onchange="onBidCompanyChange()">
-            <option value="">â Select a company â</option>
+            <option value="">— Select a company —</option>
           </select>
         </div>
 
@@ -1725,7 +1725,7 @@
         <div class="form-group form-full" id="bid-contact-group">
           <label class="form-label">Contact Person</label>
           <select class="form-select" id="bid-contact-select" onchange="onBidContactChange()">
-            <option value="">â Select a contact â</option>
+            <option value="">— Select a contact —</option>
           </select>
         </div>
 
@@ -1766,7 +1766,7 @@
         <div class="form-group form-full">
           <label class="form-label">Attachments</label>
           <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFiles(event)">
-            ð Click to attach files or drag & drop
+            📎 Click to attach files or drag & drop
           </div>
           <input type="file" id="file-input" multiple style="display:none" onchange="addFiles(this.files)">
           <div class="file-list" id="file-list"></div>
@@ -1785,7 +1785,7 @@
   <div class="modal">
     <div class="modal-header">
       <div class="modal-title" id="company-modal-title">Add Company</div>
-      <button class="modal-close" onclick="closeAddCompanyModal()">â</button>
+      <button class="modal-close" onclick="closeAddCompanyModal()">✕</button>
     </div>
     <div class="modal-body">
       <div class="form-grid">
@@ -1823,7 +1823,7 @@
   <div class="modal">
     <div class="modal-header">
       <div class="modal-title" id="person-modal-title">Add Contact</div>
-      <button class="modal-close" onclick="closeAddPersonModal()">â</button>
+      <button class="modal-close" onclick="closeAddPersonModal()">✕</button>
     </div>
     <div class="modal-body">
       <div class="form-grid">
@@ -1875,7 +1875,7 @@
   <div class="modal modal-lg">
     <div class="modal-header">
       <div class="modal-title" id="view-modal-title">Bid Details</div>
-      <button class="modal-close" onclick="document.getElementById('view-modal').classList.remove('open')">â</button>
+      <button class="modal-close" onclick="document.getElementById('view-modal').classList.remove('open')">✕</button>
     </div>
     <div class="modal-body" id="view-modal-body"></div>
     <div class="modal-footer">
@@ -1891,17 +1891,17 @@
     <!-- Header -->
     <div style="display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:58px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;">
       <div style="display:flex;align-items:center;gap:14px;">
-        <button class="modal-close" onclick="closeProposalModal()" style="font-size:20px;">â</button>
+        <button class="modal-close" onclick="closeProposalModal()" style="font-size:20px;">✕</button>
         <div>
           <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--accent);" id="proposal-modal-title">Proposal Builder</div>
           <div style="font-size:11px;color:var(--muted);margin-top:-2px;" id="proposal-modal-sub"></div>
         </div>
       </div>
       <div style="display:flex;gap:8px;align-items:center;">
-        <button class="btn btn-ghost" onclick="openMyCompanyModal()" style="font-size:12px;">âï¸ My Company</button>
-        <button class="btn btn-ghost" onclick="toggleSavedQuotesPanel()" style="font-size:12px;" id="saved-quotes-btn">ð Saved Quotes</button>
-        <button class="btn btn-ghost" onclick="saveCurrentQuote()" style="font-size:12px;border-color:var(--accent);color:var(--accent);">ð¾ Save Quote</button>
-        <button class="btn btn-primary" onclick="exportProposalPDF()" style="font-size:12px;">â¬ Export PDF</button>
+        <button class="btn btn-ghost" onclick="openMyCompanyModal()" style="font-size:12px;">⚙️ My Company</button>
+        <button class="btn btn-ghost" onclick="toggleSavedQuotesPanel()" style="font-size:12px;" id="saved-quotes-btn">📁 Saved Quotes</button>
+        <button class="btn btn-ghost" onclick="saveCurrentQuote()" style="font-size:12px;border-color:var(--accent);color:var(--accent);">💾 Save Quote</button>
+        <button class="btn btn-primary" onclick="exportProposalPDF()" style="font-size:12px;">⬇ Export PDF</button>
       </div>
     </div>
 
@@ -1909,15 +1909,15 @@
     <div id="saved-quotes-panel" style="display:none;position:absolute;top:58px;right:0;width:340px;height:calc(100% - 58px);background:var(--surface);border-left:1px solid var(--border);z-index:200;flex-direction:column;overflow:hidden;box-shadow:-4px 0 20px rgba(0,0,0,0.3);">
       <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
         <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);">Saved Quotes</div>
-        <button onclick="toggleSavedQuotesPanel()" style="background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;line-height:1;">â</button>
+        <button onclick="toggleSavedQuotesPanel()" style="background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;line-height:1;">✕</button>
       </div>
       <div id="saved-quotes-list" style="flex:1;overflow-y:auto;padding:12px;"></div>
     </div>
 
     <!-- Page tabs -->
     <div style="display:flex;background:var(--surface2);border-bottom:1px solid var(--border);flex-shrink:0;">
-      <div id="prop-tab-1" onclick="switchProposalPage(1)" style="padding:10px 24px;font-size:12px;font-weight:600;cursor:pointer;border-bottom:2px solid var(--accent);color:var(--accent);letter-spacing:0.5px;transition:all 0.15s;">Page 1 â Estimate</div>
-      <div id="prop-tab-2" onclick="switchProposalPage(2)" style="padding:10px 24px;font-size:12px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;color:var(--muted);letter-spacing:0.5px;transition:all 0.15s;">Page 2 â Inclusions & Terms</div>
+      <div id="prop-tab-1" onclick="switchProposalPage(1)" style="padding:10px 24px;font-size:12px;font-weight:600;cursor:pointer;border-bottom:2px solid var(--accent);color:var(--accent);letter-spacing:0.5px;transition:all 0.15s;">Page 1 — Estimate</div>
+      <div id="prop-tab-2" onclick="switchProposalPage(2)" style="padding:10px 24px;font-size:12px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;color:var(--muted);letter-spacing:0.5px;transition:all 0.15s;">Page 2 — Inclusions & Terms</div>
     </div>
     <!-- Body: split panel -->
     <div class="proposal-builder" style="flex:1;overflow:hidden;">
@@ -1926,7 +1926,7 @@
 
         <!-- Bid info banner -->
         <div id="proposal-bid-banner" style="display:none;background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.25);border-radius:6px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:var(--accent);align-items:center;gap:8px;">
-          <span style="font-size:15px;">ð</span>
+          <span style="font-size:15px;">📋</span>
           <span id="proposal-bid-banner-text">Pre-filled from bid</span>
         </div>
 
@@ -1940,7 +1940,7 @@
 
         <!-- SECTION: TO (client) -->
         <div style="margin-bottom:18px;">
-          <div class="section-label" style="margin-bottom:10px;">ð¬ To (Client)</div>
+          <div class="section-label" style="margin-bottom:10px;">📬 To (Client)</div>
           <div style="font-size:11px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px;">Company</div>
           <div class="form-group" style="margin-bottom:8px;">
             <label class="form-label">Company Name</label>
@@ -1979,7 +1979,7 @@
 
         <!-- SECTION: Project Info -->
         <div style="border-top:1px solid var(--border);padding-top:16px;margin-bottom:18px;">
-          <div class="section-label" style="margin-bottom:10px;">ð Project Information</div>
+          <div class="section-label" style="margin-bottom:10px;">📐 Project Information</div>
           <div class="form-group" style="margin-bottom:10px;">
             <label class="form-label">Project Name</label>
             <input type="text" class="form-input" id="p-project" placeholder="e.g. Dalhousie Care Center" oninput="updatePreview()">
@@ -2007,7 +2007,7 @@
         <!-- SECTION: Pricing Categories -->
         <div style="border-top:1px solid var(--border);padding-top:16px;margin-bottom:18px;">
           <div class="section-header" style="margin-bottom:14px;">
-            <div class="section-label">ð° Pricing Categories</div>
+            <div class="section-label">💰 Pricing Categories</div>
             <button class="btn btn-primary btn-sm" onclick="addCategory()">+ Add Category</button>
           </div>
           <div id="categories-list"></div>
@@ -2015,12 +2015,12 @@
 
         <!-- SECTION: Terms -->
         <div style="border-top:1px solid var(--border);padding-top:16px;margin-bottom:18px;">
-          <div class="section-label" style="margin-bottom:10px;">ð Terms</div>
+          <div class="section-label" style="margin-bottom:10px;">📋 Terms</div>
           <div class="form-grid" style="margin-bottom:10px;">
             <div class="form-group">
               <label class="form-label">Quote Valid For</label>
               <select class="form-select" id="p-quote-valid" onchange="updatePreview();updatePreview2()">
-                <option value="">â Select â</option>
+                <option value="">— Select —</option>
                 <option value="30">30 days</option>
                 <option value="45">45 days</option>
                 <option value="60">60 days</option>
@@ -2044,7 +2044,7 @@
           <div style="background:rgba(245,166,35,0.06);border:1px solid rgba(245,166,35,0.2);border-radius:6px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;">
             <div>
               <div style="font-size:13px;font-weight:600;color:var(--text);">Show itemized breakdown</div>
-              <div style="font-size:11px;color:var(--muted);margin-top:2px;">Toggle line items on/off â hide to show only category totals</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:2px;">Toggle line items on/off — hide to show only category totals</div>
             </div>
             <label style="position:relative;display:inline-block;width:42px;height:24px;flex-shrink:0;">
               <input type="checkbox" id="p-show-items" checked onchange="updatePreview()" style="opacity:0;width:0;height:0;position:absolute;">
@@ -2067,8 +2067,8 @@
       <!-- LEFT: Page 2 Form -->
       <div class="proposal-form">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
-          <div style="font-size:13px;color:var(--muted);">Editing Page 2 content. Pre-filled from <strong style="color:var(--text);">My Company â Proposal Defaults</strong>.</div>
-          <button class="btn btn-ghost btn-sm" onclick="resetPage2FromDefaults()">âº Reset from defaults</button>
+          <div style="font-size:13px;color:var(--muted);">Editing Page 2 content. Pre-filled from <strong style="color:var(--text);">My Company → Proposal Defaults</strong>.</div>
+          <button class="btn btn-ghost btn-sm" onclick="resetPage2FromDefaults()">↺ Reset from defaults</button>
         </div>
 
         <div class="form-group" style="margin-bottom:16px;">
@@ -2086,8 +2086,8 @@
         <div style="border-top:1px solid var(--border);padding-top:16px;margin-bottom:16px;">
           <div class="form-group" style="margin-bottom:16px;">
             <label class="form-label">Hourly Rates</label>
-            <div style="font-size:11px;color:var(--muted);margin-bottom:6px;">One rate per line (e.g. Journeyman â $95/hr)</div>
-            <textarea class="form-textarea" id="p2-hourly" rows="5" placeholder="e.g.&#10;Journeyman â $95/hr&#10;Apprentice â $65/hr&#10;Foreman â $110/hr" oninput="updatePreview2()"></textarea>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:6px;">One rate per line (e.g. Journeyman — $95/hr)</div>
+            <textarea class="form-textarea" id="p2-hourly" rows="5" placeholder="e.g.&#10;Journeyman — $95/hr&#10;Apprentice — $65/hr&#10;Foreman — $110/hr" oninput="updatePreview2()"></textarea>
           </div>
         </div>
 
@@ -2112,12 +2112,12 @@
   <div class="modal modal-lg" style="max-width:680px;">
     <div class="modal-header">
       <div class="modal-title">My Company Info</div>
-      <button class="modal-close" onclick="closeMyCompanyModal()">â</button>
+      <button class="modal-close" onclick="closeMyCompanyModal()">✕</button>
     </div>
     <!-- Tabs -->
     <div style="display:flex;border-bottom:1px solid var(--border);background:var(--surface);">
-      <div class="mc-tab active" id="mc-tab-info" onclick="switchMCTab('info')" style="padding:12px 20px;font-size:12px;font-weight:600;cursor:pointer;border-bottom:2px solid var(--accent);color:var(--accent);letter-spacing:0.5px;">ðï¸ Company Info</div>
-      <div class="mc-tab" id="mc-tab-defaults" onclick="switchMCTab('defaults')" style="padding:12px 20px;font-size:12px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;color:var(--muted);letter-spacing:0.5px;">ð Proposal Defaults</div>
+      <div class="mc-tab active" id="mc-tab-info" onclick="switchMCTab('info')" style="padding:12px 20px;font-size:12px;font-weight:600;cursor:pointer;border-bottom:2px solid var(--accent);color:var(--accent);letter-spacing:0.5px;">🏗️ Company Info</div>
+      <div class="mc-tab" id="mc-tab-defaults" onclick="switchMCTab('defaults')" style="padding:12px 20px;font-size:12px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;color:var(--muted);letter-spacing:0.5px;">📄 Proposal Defaults</div>
     </div>
 
     <!-- TAB: Company Info -->
@@ -2125,12 +2125,12 @@
       <div style="margin-bottom:20px;">
         <div class="form-label" style="margin-bottom:8px;">Company Logo</div>
         <div style="display:flex;align-items:center;gap:16px;">
-          <div id="my-logo-preview" style="width:80px;height:80px;border-radius:8px;border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:28px;background:var(--surface2);overflow:hidden;cursor:pointer;" onclick="document.getElementById('logo-file-input').click()">ðï¸</div>
+          <div id="my-logo-preview" style="width:80px;height:80px;border-radius:8px;border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:28px;background:var(--surface2);overflow:hidden;cursor:pointer;" onclick="document.getElementById('logo-file-input').click()">🏗️</div>
           <div>
-            <button class="btn btn-ghost btn-sm" onclick="document.getElementById('logo-file-input').click()">ð Upload Logo</button>
+            <button class="btn btn-ghost btn-sm" onclick="document.getElementById('logo-file-input').click()">📁 Upload Logo</button>
             <input type="file" id="logo-file-input" accept="image/*" style="display:none" onchange="handleLogoUpload(this)">
-            <div style="font-size:11px;color:var(--muted);margin-top:6px;">PNG, JPG or SVG Â· shown on proposals</div>
-            <button class="btn btn-sm" style="margin-top:6px;background:transparent;border:1px solid var(--border);color:var(--muted);font-size:11px;" onclick="clearLogo()">â Remove</button>
+            <div style="font-size:11px;color:var(--muted);margin-top:6px;">PNG, JPG or SVG · shown on proposals</div>
+            <button class="btn btn-sm" style="margin-top:6px;background:transparent;border:1px solid var(--border);color:var(--muted);font-size:11px;" onclick="clearLogo()">✕ Remove</button>
           </div>
         </div>
       </div>
@@ -2165,7 +2165,7 @@
     <!-- TAB: Proposal Defaults -->
     <div id="mc-panel-defaults" class="modal-body" style="display:none;">
       <div style="font-size:12px;color:var(--muted);margin-bottom:16px;padding:10px 14px;background:rgba(245,166,35,0.06);border:1px solid rgba(245,166,35,0.2);border-radius:6px;">
-        ð¡ These defaults auto-fill Page 2 of every new proposal. You can still edit them per-proposal.
+        💡 These defaults auto-fill Page 2 of every new proposal. You can still edit them per-proposal.
       </div>
       <div class="form-group" style="margin-bottom:16px;">
         <label class="form-label">General Inclusions</label>
@@ -2179,8 +2179,8 @@
       </div>
       <div class="form-group" style="margin-bottom:16px;">
         <label class="form-label">Hourly Rates</label>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:6px;">One rate per line (e.g. Journeyman â $95/hr)</div>
-        <textarea class="form-textarea" id="my-hourly-rates" rows="5" placeholder="e.g.&#10;Journeyman â $95/hr&#10;Apprentice â $65/hr&#10;Foreman â $110/hr&#10;Overtime â 1.5Ã standard rate"></textarea>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:6px;">One rate per line (e.g. Journeyman — $95/hr)</div>
+        <textarea class="form-textarea" id="my-hourly-rates" rows="5" placeholder="e.g.&#10;Journeyman — $95/hr&#10;Apprentice — $65/hr&#10;Foreman — $110/hr&#10;Overtime — 1.5× standard rate"></textarea>
       </div>
       <div class="form-group">
         <label class="form-label">Terms & Conditions</label>
@@ -2227,7 +2227,7 @@ let bids = [
   { id: 2011, name: 'Skylar Townhomes Buildings 1 & 2', status: 'pending', value: 293244, contact: 'Gibraltar', company: '', due: '2025-05-22', construction: '', notes: '', files: [], assigned: ['FV'] },
   { id: 2012, name: 'Pocock Residence - 2524 16A Street SE', status: 'pending', value: 15976, contact: 'Jaime Holland', company: 'Holland Licensed Interior Design', due: '2025-05-27', construction: '', notes: '', files: [], assigned: ['FV'] },
   { id: 2013, name: 'Soberys Liquor - Canmore', status: 'pending', value: 33146, contact: 'Joey Calvitti', company: 'BSI Build', due: '2025-05-29', construction: '', notes: '', files: [], assigned: ['FV'] },
-  { id: 2014, name: 'CF Chinook Centre â Demolition Scope for Admin Office Relocation', status: 'pending', value: 11950, contact: 'Louisa Gwin', company: 'BIBD (Calgary) Inc.', due: '2025-05-29', construction: '', notes: '', files: [], assigned: ['FV'] },
+  { id: 2014, name: 'CF Chinook Centre – Demolition Scope for Admin Office Relocation', status: 'pending', value: 11950, contact: 'Louisa Gwin', company: 'BIBD (Calgary) Inc.', due: '2025-05-29', construction: '', notes: '', files: [], assigned: ['FV'] },
   { id: 2015, name: 'Choice Properties Office Renovation', status: 'pending', value: 11023, contact: 'FCMI Estimating', company: 'Fillmore Construction - Edmonton', due: '2025-05-30', construction: '', notes: '', files: [], assigned: ['FV'] },
   { id: 2016, name: 'Calgary CO-OP Cannabis Store - Seton', status: 'pending', value: 39576, contact: 'Francis Bordaje', company: 'Keller Construction Ltd', due: '2025-06-03', construction: '', notes: '', files: [], assigned: ['FV'] },
   { id: 2017, name: 'Community Natural Foods - Seton', status: 'pending', value: 111200, contact: 'Francis Bordaje', company: 'Keller Construction Ltd', due: '2025-06-03', construction: '', notes: '', files: [], assigned: ['FV'] },
@@ -2309,7 +2309,7 @@ let bids = [
   { id: 2093, name: 'Ktichen Standerwick  - 408 9A Street NE', status: 'pending', value: 5590, contact: 'Neil Bailey', company: 'LD&A Ltd', due: '', construction: '', notes: '', files: [], assigned: ['FV'] },
   { id: 2094, name: '403 31 Ave NE Calgary, AB T2E 2E3, Canada', status: 'pending', value: 4800, contact: '', company: '', due: '', construction: '', notes: '', files: [], assigned: ['FV'] },
   { id: 2095, name: 'CBE Radisson Park School', status: 'pending', value: 15068, contact: 'Ammar Hamad', company: 'FWD Construction', due: '', construction: '', notes: '', files: [], assigned: ['FV'] },
-  { id: 2096, name: 'Golden Sand Restaurant, Tuesday, Jun 24 Â· 10â11â¯AM', status: 'pending', value: 3825, contact: '', company: '', due: '', construction: '', notes: '', files: [], assigned: ['FV'] },
+  { id: 2096, name: 'Golden Sand Restaurant, Tuesday, Jun 24 · 10–11 AM', status: 'pending', value: 3825, contact: '', company: '', due: '', construction: '', notes: '', files: [], assigned: ['FV'] },
   { id: 2097, name: '3422 Richmond Road SW', status: 'pending', value: 123017, contact: 'Anthony Cimino', company: 'Lusso Custom Homes Inc', due: '', construction: '', notes: '', files: [], assigned: ['FV'] },
   { id: 2098, name: 'One 8T Wellness- Marda Loop', status: 'pending', value: 88916, contact: '', company: '', due: '', construction: '', notes: '', files: [], assigned: ['FV'] },
   { id: 2099, name: 'Shawarma Palace Seton - RFQ - RFP Supply & Install', status: 'pending', value: 11583, contact: 'Deola Onifade', company: 'Cornad Contracting Inc', due: '', construction: '', notes: '', files: [], assigned: ['FV'] },
@@ -2338,7 +2338,7 @@ let bids = [
   { id: 2122, name: 'HR1365SC (Sutherland) (copy)', status: 'won', value: 0, contact: 'Ryan Wyngaarden', company: 'Nelson Homes', due: '2025-03-07', construction: '', notes: '', files: [], assigned: ['FV'] },
   { id: 2123, name: 'Pizzaholic, Niazi Group, Calgary, AB', status: 'won', value: 21810, contact: 'Jeremy Hiscock', company: 'BSI Build', due: '2025-03-12', construction: '', notes: '', files: [], assigned: ['FV'] },
   { id: 2124, name: 'O\'Brien - 228 PARKGLEN CRESCENT SE (copy)', status: 'won', value: 8100, contact: 'Jenna Dimler', company: 'LD&A Ltd', due: '2025-03-17', construction: '', notes: '', files: [], assigned: ['FV'] },
-  { id: 2125, name: '209 10th st NE - Cheryl, Tuesday, Mar 11 Â· 11â¯AMâ12â¯PM (copy)', status: 'won', value: 12231, contact: 'Cheryl Barr', company: 'Home Owner', due: '2025-03-18', construction: '', notes: '', files: [], assigned: ['FV'] },
+  { id: 2125, name: '209 10th st NE - Cheryl, Tuesday, Mar 11 · 11 AM–12 PM (copy)', status: 'won', value: 12231, contact: 'Cheryl Barr', company: 'Home Owner', due: '2025-03-18', construction: '', notes: '', files: [], assigned: ['FV'] },
   { id: 2126, name: 'Hinnell 2.0  tender', status: 'won', value: 6887, contact: 'Lindsey Tsang', company: 'LD&A Ltd', due: '2025-04-01', construction: '', notes: '', files: [], assigned: ['FV'] },
   { id: 2127, name: 'Glenbrook 37 #1', status: 'won', value: 149180, contact: 'Jon Turton', company: 'Old Street Dev.', due: '2025-04-03', construction: '', notes: '', files: [], assigned: ['FV'] },
   { id: 2128, name: 'Glenbrook 37 #2', status: 'won', value: 120551, contact: 'Jon Turton', company: 'Old Street Dev.', due: '2025-04-03', construction: '', notes: '', files: [], assigned: ['FV'] },
@@ -2351,7 +2351,7 @@ let bids = [
   { id: 2135, name: 'Burger king - cochrane (copy)', status: 'won', value: 39275, contact: 'John Mclelland', company: 'Versatile Developments', due: '2025-07-16', construction: '', notes: '', files: [], assigned: ['FV'] },
   { id: 2136, name: '25.113 - Inspired Cannabi Strathmore, (copy)', status: 'won', value: 10200, contact: 'Joey Calvitti', company: 'BSI Build', due: '2025-08-11', construction: '', notes: '', files: [], assigned: ['FV'] },
   { id: 2137, name: 'Mary Browns, #9168 West Springs (copy)', status: 'won', value: 26457, contact: 'Joey Calvitti', company: 'BSI Build', due: '2025-09-04', construction: '', notes: '', files: [], assigned: ['FV'] },
-  { id: 2138, name: 'Newman Deans - Ld&a, Wednesday, Jan 22 Â· 2â3â¯PM (copy)', status: 'won', value: 8388, contact: 'Neil Bailey', company: 'LD&A Ltd', due: '', construction: '', notes: '', files: [], assigned: ['FV'] },
+  { id: 2138, name: 'Newman Deans - Ld&a, Wednesday, Jan 22 · 2–3 PM (copy)', status: 'won', value: 8388, contact: 'Neil Bailey', company: 'LD&A Ltd', due: '', construction: '', notes: '', files: [], assigned: ['FV'] },
   { id: 2139, name: 'Avalon Seton (copy)', status: 'won', value: 94654, contact: 'Graham O\'neil', company: 'Avalon', due: '', construction: '', notes: '', files: [], assigned: ['FV'] },
   { id: 2140, name: 'Swiston - 159 Oakside circle sw. BSMT (copy)', status: 'won', value: 9380, contact: 'Lindsey Tsang', company: 'LD&A Ltd', due: '', construction: '', notes: '', files: [], assigned: ['FV'] },
   { id: 2141, name: 'Loop 36 (20 units) Multi Family', status: 'won', value: 293920, contact: 'Jon Turton', company: 'Old Street Dev.', due: '2024-03-14', construction: '', notes: '', files: [], assigned: ['FV'] },
@@ -2414,7 +2414,7 @@ let bids = [
   { id: 2198, name: 'Carstairs Reservoir', status: 'lost', value: 8400, contact: 'Darija Svilar', company: 'Maple Reinders', due: '2025-02-21', construction: '', notes: '', files: [], assigned: ['FV'] },
   { id: 2199, name: 'Bow City Storage CRU\'s 1 & 2', status: 'lost', value: 177084, contact: 'FCMI Estimating', company: 'Fillmore Construction - Edmonton', due: '2025-02-24', construction: '', notes: '', files: [], assigned: ['FV'] },
   { id: 2200, name: 'Big Springs Plaza Airdrie', status: 'lost', value: 60560, contact: 'John Arcurri', company: 'Ashton Luxury Living', due: '2025-02-25', construction: '', notes: '', files: [], assigned: ['FV'] },
-  { id: 2201, name: 'Calgary Sports Plex Project, Monday, Feb 24 Â· 11:30â11:45â¯AM', status: 'lost', value: 11649, contact: 'Don Bergerman', company: 'EFC Developments', due: '2025-02-27', construction: '', notes: '', files: [], assigned: ['FV'] },
+  { id: 2201, name: 'Calgary Sports Plex Project, Monday, Feb 24 · 11:30–11:45 AM', status: 'lost', value: 11649, contact: 'Don Bergerman', company: 'EFC Developments', due: '2025-02-27', construction: '', notes: '', files: [], assigned: ['FV'] },
   { id: 2202, name: '25.033 - Mary Browns, #9176, Calgary, AB', status: 'lost', value: 37000, contact: 'Carlle Balanquit', company: 'BSI Build', due: '2025-03-10', construction: '', notes: '', files: [], assigned: ['FV'] },
   { id: 2203, name: 'Fleischmans Yeast Offices', status: 'lost', value: 29920, contact: 'Jeremy Hiscock', company: 'BSI Build', due: '2025-03-12', construction: '', notes: '', files: [], assigned: ['FV'] },
   { id: 2204, name: 'Belmont Apartments - B1', status: 'lost', value: 1856970, contact: 'Wilson Chuong', company: 'Luxuria Group', due: '2025-03-14', construction: '', notes: '', files: [], assigned: ['FV'] },
@@ -2559,7 +2559,7 @@ function openAssignPopup(e, bidId) {
       <div class="assign-member" onclick="toggleAssign('${m.id}')">
         <div class="assign-member-avatar" style="background:${m.bg};color:${m.color};">${m.initials}</div>
         <div class="assign-member-name">${m.name}</div>
-        <div class="assign-member-check ${checked ? 'checked' : ''}" id="acheck-${m.id}">${checked ? 'â' : ''}</div>
+        <div class="assign-member-check ${checked ? 'checked' : ''}" id="acheck-${m.id}">${checked ? '✓' : ''}</div>
       </div>
     `;
   }).join('');
@@ -2586,7 +2586,7 @@ function toggleAssign(memberId) {
   if (chk) {
     const isChecked = bid.assigned.includes(memberId);
     chk.className = 'assign-member-check' + (isChecked ? ' checked' : '');
-    chk.textContent = isChecked ? 'â' : '';
+    chk.textContent = isChecked ? '✓' : '';
   }
   // Refresh table rows without closing popup
   renderBidsTable();
@@ -2722,7 +2722,7 @@ function renderAnalytics() {
 
         <div style="margin-bottom:10px;">
           <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
-            <span style="font-size:12px;color:var(--won);">â Won (${won.count} bids)</span>
+            <span style="font-size:12px;color:var(--won);">✓ Won (${won.count} bids)</span>
             <span style="font-size:12px;font-weight:700;color:var(--won);">${fmt(won.value)}</span>
           </div>
           <div style="height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;">
@@ -2732,7 +2732,7 @@ function renderAnalytics() {
 
         <div style="margin-bottom:12px;">
           <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
-            <span style="font-size:12px;color:var(--lost);">â Lost (${lost.count} bids)</span>
+            <span style="font-size:12px;color:var(--lost);">✗ Lost (${lost.count} bids)</span>
             <span style="font-size:12px;font-weight:700;color:var(--lost);">${fmt(lost.value)}</span>
           </div>
           <div style="height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;">
@@ -2778,7 +2778,7 @@ function renderAnalytics() {
       <div style="margin-bottom:14px;">
         <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
           <span style="font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60%;">${co}</span>
-          <span style="font-size:12px;color:var(--muted);">${s.count} job${s.count>1?'s':''} Â· <strong style="color:var(--won)">${fmt(s.value)}</strong></span>
+          <span style="font-size:12px;color:var(--muted);">${s.count} job${s.count>1?'s':''} · <strong style="color:var(--won)">${fmt(s.value)}</strong></span>
         </div>
         <div style="height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;">
           <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,var(--accent),var(--won));border-radius:3px;"></div>
@@ -2792,7 +2792,7 @@ function renderAnalytics() {
   html += `<div id="year-bids-panel" style="display:none;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:24px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
       <div id="year-bids-title" style="font-size:14px;font-weight:700;"></div>
-      <button onclick="document.getElementById('year-bids-panel').style.display='none'" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;">â</button>
+      <button onclick="document.getElementById('year-bids-panel').style.display='none'" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;">✕</button>
     </div>
     <div id="year-bids-list"></div>
   </div>`;
@@ -2808,11 +2808,11 @@ function showYearBids(year, status) {
   const list  = document.getElementById('year-bids-list');
 
   const color = status === 'won' ? 'var(--won)' : 'var(--lost)';
-  const icon  = status === 'won' ? 'â' : 'â';
-  title.innerHTML = `<span style="color:${color}">${icon} ${status === 'won' ? 'Won' : 'Lost'} Bids â ${year}</span>`;
+  const icon  = status === 'won' ? '✓' : '✗';
+  title.innerHTML = `<span style="color:${color}">${icon} ${status === 'won' ? 'Won' : 'Lost'} Bids — ${year}</span>`;
 
   function fmt(n) {
-    if (!n) return 'â';
+    if (!n) return '—';
     if (n >= 1000000) return '$' + (n/1000000).toFixed(2) + 'M';
     if (n >= 1000) return '$' + (n/1000).toFixed(0) + 'K';
     return '$' + n.toLocaleString();
@@ -2833,10 +2833,10 @@ function showYearBids(year, status) {
         ${filtered.map(b => `
           <tr style="border-bottom:1px solid rgba(255,255,255,0.04);" onmouseenter="this.style.background='rgba(255,255,255,0.03)'" onmouseleave="this.style.background='transparent'">
             <td style="padding:8px 6px;color:var(--text);max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${b.name}</td>
-            <td style="padding:8px 6px;color:var(--muted);">${b.company || 'â'}</td>
-            <td style="padding:8px 6px;color:var(--muted);">${b.contact || 'â'}</td>
+            <td style="padding:8px 6px;color:var(--muted);">${b.company || '—'}</td>
+            <td style="padding:8px 6px;color:var(--muted);">${b.contact || '—'}</td>
             <td style="padding:8px 6px;text-align:right;color:${color};font-weight:700;">${fmt(b.value)}</td>
-            <td style="padding:8px 6px;text-align:right;color:var(--muted);">${b.due || 'â'}</td>
+            <td style="padding:8px 6px;text-align:right;color:var(--muted);">${b.due || '—'}</td>
           </tr>
         `).join('')}
       </tbody>
@@ -2858,7 +2858,7 @@ async function openProposalModal(bidId) {
   const b = bids.find(x => x.id === bidId);
   currentProposalBidId = bidId;
 
-  // ââ CHECK SUPABASE FIRST for a saved quote ââ
+  // ── CHECK SUPABASE FIRST for a saved quote ──
   if (bidId && window._supabase) {
     try {
       const { data: quotes, error: qErr } = await window._supabase.from('saved_quotes').select('*').eq('bid_id', bidId).order('updated_at', { ascending: false });
@@ -2869,7 +2869,7 @@ async function openProposalModal(bidId) {
         document.getElementById('proposal-modal-sub').textContent = b ? `For: ${b.name}` : '';
         const banner = document.getElementById('proposal-bid-banner');
         const bannerText = document.getElementById('proposal-bid-banner-text');
-        if (b) { banner.style.display = 'flex'; bannerText.textContent = `Loaded saved quote Â· ${quotes[0].quote_label || b.name}`; }
+        if (b) { banner.style.display = 'flex'; bannerText.textContent = `Loaded saved quote · ${quotes[0].quote_label || b.name}`; }
         switchProposalPage(1);
         document.getElementById('proposal-modal').classList.add('open');
         renderSavedQuotesList();
@@ -2879,7 +2879,7 @@ async function openProposalModal(bidId) {
     } catch(e) { console.error('Error loading saved quotes from Supabase:', e); }
   }
 
-  // ââ Fallback: check localStorage ââ
+  // ── Fallback: check localStorage ──
   const savedQuotes = getSavedQuotes();
   const existingQuote = savedQuotes.find(q => q.bidId === bidId);
   if (existingQuote) {
@@ -2888,14 +2888,14 @@ async function openProposalModal(bidId) {
     document.getElementById('proposal-modal-sub').textContent = b ? `For: ${b.name}` : '';
     const banner = document.getElementById('proposal-bid-banner');
     const bannerText = document.getElementById('proposal-bid-banner-text');
-    if (b) { banner.style.display = 'flex'; bannerText.textContent = `Loaded saved quote Â· ${existingQuote.quoteNum || b.name}`; }
+    if (b) { banner.style.display = 'flex'; bannerText.textContent = `Loaded saved quote · ${existingQuote.quoteNum || b.name}`; }
     switchProposalPage(1);
     document.getElementById('proposal-modal').classList.add('open');
     showToast('Loaded saved quote');
     return;
   }
 
-  // ââ No saved quote â start fresh from bid data ââ
+  // ── No saved quote — start fresh from bid data ──
   const linkedCo = b?.contactCompanyId ? companies.find(c => c.id === b.contactCompanyId) : companies.find(c => c.name === b?.company);
   const linkedPerson = linkedCo && b?.contactPersonId
     ? linkedCo.persons.find(p => p.id === b.contactPersonId)
@@ -2939,7 +2939,7 @@ async function openProposalModal(bidId) {
   const bannerText = document.getElementById('proposal-bid-banner-text');
   if (b) {
     banner.style.display = 'flex';
-    bannerText.textContent = `Pre-filled from bid Â· ${b.contact}${b.company ? ' Â· ' + b.company : ''}`;
+    bannerText.textContent = `Pre-filled from bid · ${b.contact}${b.company ? ' · ' + b.company : ''}`;
   } else { banner.style.display = 'none'; }
 
   renderCategoriesUI();
@@ -2992,7 +2992,7 @@ function fmtFull(n) {
   return '$' + (n || 0).toLocaleString('en', {minimumFractionDigits:2, maximumFractionDigits:2});
 }
 
-// ============ PROPOSAL BUILDER â Category + Line Items ============
+// ============ PROPOSAL BUILDER — Category + Line Items ============
 let catNextId = 1;
 let currentProposalBidId = null;
 let catLiNextId = 100;
@@ -3078,7 +3078,7 @@ function renderCategoryItems(catId) {
         oninput="updateCatLI(${catId},${li.id},'qty',parseFloat(this.value)||1)">
       <input type="number" value="${li.price}" class="form-input" style="background:transparent;border:none;padding:0;font-size:12px;text-align:right;color:var(--accent);font-family:'DM Mono',monospace;" placeholder="Unit $"
         oninput="updateCatLI(${catId},${li.id},'price',parseFloat(this.value)||0)">
-      <span class="p-cat-li-del" onclick="removeCatLI(${catId},${li.id})">â</span>
+      <span class="p-cat-li-del" onclick="removeCatLI(${catId},${li.id})">✕</span>
     </div>
   `).join('');
 }
@@ -3095,18 +3095,18 @@ function renderCategoriesUI() {
     return `
       <div class="p-category" id="cat-block-${cat.id}">
         <div class="p-category-header" onclick="toggleCategory(${cat.id})">
-          <span class="p-category-chevron">â¼</span>
+          <span class="p-category-chevron">▼</span>
           <input class="p-category-name-input" type="text" value="${cat.name.replace(/"/g,'&quot;')}" placeholder="Category name (e.g. Drywall & Taping)"
             onclick="event.stopPropagation()"
             oninput="updateCatField(${cat.id},'name',this.value)">
           <span class="p-category-total" id="cat-total-${cat.id}">${total ? fmtFull(total) : ''}</span>
           <button class="btn btn-sm" style="background:transparent;border:1px solid var(--border);color:var(--muted);font-size:11px;padding:3px 8px;flex-shrink:0;"
-            onclick="event.stopPropagation();removeCategory(${cat.id})">â</button>
+            onclick="event.stopPropagation();removeCategory(${cat.id})">✕</button>
         </div>
         <div class="p-category-body">
           <div class="form-group" style="margin-bottom:10px;">
             <label class="form-label">Category Scope / Description</label>
-            <textarea class="form-textarea" rows="4" placeholder="Describe the scope for this category...&#10;e.g.&#10;â¢ 5/8&quot; Standard drywall to exterior walls â One layer&#10;â¢ 1/2&quot; Standard drywall to interior partitions&#10;â¢ All exposed drywall taped and sanded to level 4 finish"
+            <textarea class="form-textarea" rows="4" placeholder="Describe the scope for this category...&#10;e.g.&#10;• 5/8&quot; Standard drywall to exterior walls – One layer&#10;• 1/2&quot; Standard drywall to interior partitions&#10;• All exposed drywall taped and sanded to level 4 finish"
               style="font-size:12px;line-height:1.5;"
               oninput="updateCatField(${cat.id},'description',this.value)">${(cat.description||'').replace(/</g,'&lt;')}</textarea>
           </div>
@@ -3132,7 +3132,7 @@ function renderCategoriesUI() {
                     onchange="updateCatLI(${cat.id},${li.id},'qty',parseFloat(this.value)||1)">
                   <input type="number" value="${li.price}" class="form-input" style="background:transparent;border:none;padding:0;font-size:12px;text-align:right;color:var(--accent);font-family:'DM Mono',monospace;" placeholder="Unit $"
                     onchange="updateCatLI(${cat.id},${li.id},'price',parseFloat(this.value)||0)">
-                  <span class="p-cat-li-del" onclick="removeCatLI(${cat.id},${li.id})">â</span>
+                  <span class="p-cat-li-del" onclick="removeCatLI(${cat.id},${li.id})">✕</span>
                 </div>`).join('')
             }
           </div>
@@ -3219,7 +3219,7 @@ function quickStatusChange(bidId, selectEl) {
 }
 
 function buildTable(rows) {
-  if (!rows.length) return `<div class="empty-state"><div class="empty-icon">ð­</div><div class="empty-text">No bids found</div></div>`;
+  if (!rows.length) return `<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">No bids found</div></div>`;
   return `
     <table>
       <thead>
@@ -3254,31 +3254,31 @@ function buildTable(rows) {
                   <option value="won"        ${b.status==='won'       ?'selected':''}>Won</option>
                   <option value="lost"       ${b.status==='lost'      ?'selected':''}>Lost</option>
                 </select>
-                <span class="status-chevron">â¼</span>
+                <span class="status-chevron">▼</span>
                 <span class="status-dot" style="background:${b.status==='estimating'?'var(--estimating)':b.status==='pending'?'var(--pending)':b.status==='won'?'var(--won)':'var(--lost)'};"></span>
               </div>
             </td>
-            <td class="value-cell">${b.value ? fmtFull(b.value) : 'â'}</td>
+            <td class="value-cell">${b.value ? fmtFull(b.value) : '—'}</td>
             <td>
               <div class="row-team">
                 ${avatarHtml}
-                <div class="row-avatar-add" onclick="openAssignPopup(event, ${b.id})" title="Assign team members">ï¼</div>
+                <div class="row-avatar-add" onclick="openAssignPopup(event, ${b.id})" title="Assign team members">＋</div>
               </div>
             </td>
-            <td class="contact-cell">${b.contact || 'â'}</td>
-            <td class="company-cell">${b.company || 'â'}</td>
-            <td class="date-cell">${b.due ? new Date(b.due + 'T00:00:00').toLocaleDateString('en-CA', {month:'short',day:'numeric',year:'numeric'}) : 'â'}</td>
+            <td class="contact-cell">${b.contact || '—'}</td>
+            <td class="company-cell">${b.company || '—'}</td>
+            <td class="date-cell">${b.due ? new Date(b.due + 'T00:00:00').toLocaleDateString('en-CA', {month:'short',day:'numeric',year:'numeric'}) : '—'}</td>
             <td>
               <span class="file-count ${b.files && b.files.length ? 'has-files' : ''}">
-                ${b.files && b.files.length ? 'ð ' + b.files.length : 'â'}
+                ${b.files && b.files.length ? '📎 ' + b.files.length : '—'}
               </span>
             </td>
             <td>
               <div class="row-actions">
-                <div class="action-btn" onclick="viewBid(${b.id})" title="View">ð</div>
-                <div class="action-btn" onclick="editBid(${b.id})" title="Edit">âï¸</div>
-                <div class="action-btn" onclick="openProposalModal(${b.id})" title="Create Proposal" style="color:var(--accent);">ð</div>
-                <div class="action-btn del" onclick="deleteBid(${b.id})" title="Delete">ð</div>
+                <div class="action-btn" onclick="viewBid(${b.id})" title="View">👁</div>
+                <div class="action-btn" onclick="editBid(${b.id})" title="Edit">✏️</div>
+                <div class="action-btn" onclick="openProposalModal(${b.id})" title="Create Proposal" style="color:var(--accent);">📄</div>
+                <div class="action-btn del" onclick="deleteBid(${b.id})" title="Delete">🗑</div>
               </div>
             </td>
           </tr>
@@ -3302,7 +3302,7 @@ function viewBid(id) {
       </div>
       <div>
         <div class="form-label" style="margin-bottom:4px;">Value</div>
-        <div style="font-family:'DM Mono',monospace;font-size:18px;color:var(--accent);">${b.value ? fmtFull(b.value) : 'â'}</div>
+        <div style="font-family:'DM Mono',monospace;font-size:18px;color:var(--accent);">${b.value ? fmtFull(b.value) : '—'}</div>
       </div>
       <div>
         <div class="form-label" style="margin-bottom:4px;">Assigned Team</div>
@@ -3330,12 +3330,12 @@ function viewBid(id) {
               <div>
                 <div style="font-size:13px;font-weight:600;">${p.first} ${p.last}</div>
                 <div style="font-size:11px;color:var(--muted);">${p.role || 'Other'}</div>
-                ${p.email ? `<div style="font-size:12px;color:var(--blue);">â ${p.email}</div>` : ''}
-                ${p.phone ? `<div style="font-size:12px;color:var(--muted);">ð ${p.phone}</div>` : ''}
+                ${p.email ? `<div style="font-size:12px;color:var(--blue);">✉ ${p.email}</div>` : ''}
+                ${p.phone ? `<div style="font-size:12px;color:var(--muted);">📞 ${p.phone}</div>` : ''}
               </div>
             </div>`;
           }
-          return `<div>${b.contact || 'â'}</div>`;
+          return `<div>${b.contact || '—'}</div>`;
         })()}
       </div>
       <div>
@@ -3350,20 +3350,20 @@ function viewBid(id) {
               <div style="width:28px;height:28px;border-radius:5px;background:${col.bg};color:${col.color};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;">${initials}</div>
               <div>
                 <div style="font-size:13px;font-weight:600;">${co.name}</div>
-                ${co.phone ? `<div style="font-size:12px;color:var(--muted);">ð ${co.phone}</div>` : ''}
+                ${co.phone ? `<div style="font-size:12px;color:var(--muted);">📞 ${co.phone}</div>` : ''}
               </div>
             </div>`;
           }
-          return `<div>${b.company || 'â'}</div>`;
+          return `<div>${b.company || '—'}</div>`;
         })()}
       </div>
       <div>
         <div class="form-label" style="margin-bottom:4px;">Due Date</div>
-        <div style="font-family:'DM Mono',monospace;">${b.due || 'â'}</div>
+        <div style="font-family:'DM Mono',monospace;">${b.due || '—'}</div>
       </div>
       <div>
         <div class="form-label" style="margin-bottom:4px;">Est. Construction Date</div>
-        <div style="font-family:'DM Mono',monospace;">${b.construction || 'â'}</div>
+        <div style="font-family:'DM Mono',monospace;">${b.construction || '—'}</div>
       </div>
       ${b.notes ? `
       <div style="grid-column:1/-1">
@@ -3374,7 +3374,7 @@ function viewBid(id) {
       <div style="grid-column:1/-1">
         <div class="form-label" style="margin-bottom:8px;">Attachments (${b.files.length})</div>
         <div class="file-list">
-          ${b.files.map(f => `<div class="file-item"><div class="file-item-name">ð ${f.name}</div><span style="color:var(--muted);font-size:11px;">${(f.size/1024).toFixed(1)} KB</span></div>`).join('')}
+          ${b.files.map(f => `<div class="file-item"><div class="file-item-name">📎 ${f.name}</div><span style="color:var(--muted);font-size:11px;">${(f.size/1024).toFixed(1)} KB</span></div>`).join('')}
         </div>
       </div>` : ''}
     </div>
@@ -3386,11 +3386,11 @@ function viewBid(id) {
   document.getElementById('view-modal').classList.add('open');
 }
 
-// ============ BID MODAL â Contact Dropdown Helpers ============
+// ============ BID MODAL — Contact Dropdown Helpers ============
 
 function populateBidCompanyDropdown(selectedCompanyName = '') {
   const sel = document.getElementById('bid-company-select');
-  sel.innerHTML = '<option value="">â Select a company â</option>';
+  sel.innerHTML = '<option value="">— Select a company —</option>';
   companies.forEach(co => {
     const opt = document.createElement('option');
     opt.value = co.id;
@@ -3405,12 +3405,12 @@ function populateBidCompanyDropdown(selectedCompanyName = '') {
 function populateBidContactDropdown(companyId, selectedContactName = '') {
   const co = companies.find(c => c.id == companyId);
   const sel = document.getElementById('bid-contact-select');
-  sel.innerHTML = '<option value="">â Select a contact â</option>';
+  sel.innerHTML = '<option value="">— Select a contact —</option>';
   if (co && co.persons.length) {
     co.persons.forEach(p => {
       const opt = document.createElement('option');
       opt.value = p.id;
-      opt.textContent = `${p.first} ${p.last} Â· ${p.role || 'Other'}`;
+      opt.textContent = `${p.first} ${p.last} · ${p.role || 'Other'}`;
       if (`${p.first} ${p.last}` === selectedContactName) opt.selected = true;
       sel.appendChild(opt);
     });
@@ -3451,9 +3451,9 @@ function updateBidContactPreview(companyId, personId) {
   document.getElementById('bid-contact-avatar').style.color = color;
   document.getElementById('bid-contact-avatar').textContent = initials;
   document.getElementById('bid-contact-name-display').textContent = `${p.first} ${p.last}`;
-  document.getElementById('bid-contact-role-display').textContent = (p.role || 'Other') + (co ? '  Â·  ' + co.name : '');
-  document.getElementById('bid-contact-email-display').textContent = p.email ? 'â ' + p.email : '';
-  document.getElementById('bid-contact-phone-display').textContent = p.phone ? 'ð ' + p.phone : '';
+  document.getElementById('bid-contact-role-display').textContent = (p.role || 'Other') + (co ? '  ·  ' + co.name : '');
+  document.getElementById('bid-contact-email-display').textContent = p.email ? '✉ ' + p.email : '';
+  document.getElementById('bid-contact-phone-display').textContent = p.phone ? '📞 ' + p.phone : '';
   preview.style.display = 'block';
 }
 
@@ -3561,8 +3561,8 @@ function addFiles(files) {
 function renderFileList() {
   document.getElementById('file-list').innerHTML = pendingFiles.map((f, i) => `
     <div class="file-item">
-      <div class="file-item-name">ð ${f.name} <span style="color:var(--muted);margin-left:8px;font-size:11px;">${(f.size/1024).toFixed(1)} KB</span></div>
-      <span class="file-remove" onclick="removeFile(${i})">â</span>
+      <div class="file-item-name">📎 ${f.name} <span style="color:var(--muted);margin-left:8px;font-size:11px;">${(f.size/1024).toFixed(1)} KB</span></div>
+      <span class="file-remove" onclick="removeFile(${i})">✕</span>
     </div>
   `).join('');
 }
@@ -3580,7 +3580,7 @@ function dropFiles(e) {
   addFiles(e.dataTransfer.files);
 }
 
-// ============ CONTACTS â Company + Person model ============
+// ============ CONTACTS — Company + Person model ============
 
 let companies = [
   { id: 10, name: 'Akela Construction Ltd', email: '', phone: '', address: '', notes: '',
@@ -4094,7 +4094,7 @@ function renderCompanyList(query = '') {
         <div class="company-item-logo" style="background:${col.bg};color:${col.color};">${initials}</div>
         <div class="company-item-info">
           <div class="company-item-name">${co.name}</div>
-          <div class="company-item-meta">${co.persons.length} contact${co.persons.length !== 1 ? 's' : ''} Â· ${bidCount} bid${bidCount !== 1 ? 's' : ''}</div>
+          <div class="company-item-meta">${co.persons.length} contact${co.persons.length !== 1 ? 's' : ''} · ${bidCount} bid${bidCount !== 1 ? 's' : ''}</div>
         </div>
       </div>
     `;
@@ -4125,14 +4125,14 @@ function renderCompanyDetail(id) {
         <div class="company-detail-name">${co.name}</div>
 
         <div style="display:flex;gap:8px;margin-top:10px;">
-          <button class="btn btn-ghost btn-sm" onclick="openEditCompanyModal(${co.id})">âï¸ Edit</button>
-          <button class="btn btn-sm" style="background:var(--danger)20;color:var(--danger);border:1px solid var(--danger)40;" onclick="deleteCompany(${co.id})">ð Delete</button>
+          <button class="btn btn-ghost btn-sm" onclick="openEditCompanyModal(${co.id})">✏️ Edit</button>
+          <button class="btn btn-sm" style="background:var(--danger)20;color:var(--danger);border:1px solid var(--danger)40;" onclick="deleteCompany(${co.id})">🗑 Delete</button>
         </div>
 
         ${co.email || co.phone || co.address ? `<div class="company-info-label">Contact Info</div>` : ''}
-        ${co.email ? `<div class="company-info-row">â <span style="color:var(--blue)">${co.email}</span></div>` : ''}
-        ${co.phone ? `<div class="company-info-row">ð <span>${co.phone}</span></div>` : ''}
-        ${co.address ? `<div class="company-info-row">ð <span>${co.address}</span></div>` : ''}
+        ${co.email ? `<div class="company-info-row">✉ <span style="color:var(--blue)">${co.email}</span></div>` : ''}
+        ${co.phone ? `<div class="company-info-row">📞 <span>${co.phone}</span></div>` : ''}
+        ${co.address ? `<div class="company-info-row">📍 <span>${co.address}</span></div>` : ''}
 
         ${relatedBids.length ? `
         <div class="company-info-label">Active Bids (${relatedBids.length})</div>
@@ -4164,7 +4164,7 @@ function renderCompanyDetail(id) {
 
 function renderPersonsList(co) {
   if (!co.persons.length) {
-    return `<div class="empty-state"><div class="empty-icon">ð¤</div><div class="empty-text">No contacts yet for this company.</div><button class="btn btn-ghost btn-sm" onclick="openAddPersonModal()">+ Add First Contact</button></div>`;
+    return `<div class="empty-state"><div class="empty-icon">👤</div><div class="empty-text">No contacts yet for this company.</div><button class="btn btn-ghost btn-sm" onclick="openAddPersonModal()">+ Add First Contact</button></div>`;
   }
   const personColors = ['#3b82f6','#f5a623','#2ecc71','#a855f7','#06b6d4','#e8391d','#f97316','#ec4899'];
   return co.persons.map((p, i) => {
@@ -4178,12 +4178,12 @@ function renderPersonsList(co) {
           <div class="person-role">${p.role || 'Other'}</div>
         </div>
         <div class="person-contact-info">
-          ${p.email ? `<a href="mailto:${p.email}">â ${p.email}</a>` : ''}
-          ${p.phone ? `<span>ð ${p.phone}</span>` : ''}
+          ${p.email ? `<a href="mailto:${p.email}">✉ ${p.email}</a>` : ''}
+          ${p.phone ? `<span>📞 ${p.phone}</span>` : ''}
         </div>
         <div class="person-actions">
-          <div class="action-btn" onclick="openEditPersonModal(${co.id}, ${p.id})" title="Edit">âï¸</div>
-          <div class="action-btn del" onclick="deletePerson(${co.id}, ${p.id})" title="Delete">ð</div>
+          <div class="action-btn" onclick="openEditPersonModal(${co.id}, ${p.id})" title="Edit">✏️</div>
+          <div class="action-btn del" onclick="deletePerson(${co.id}, ${p.id})" title="Delete">🗑</div>
         </div>
       </div>
     `;
@@ -4249,7 +4249,7 @@ function deleteCompany(id) {
   document.getElementById('add-contact-btn').style.display = 'none';
   document.getElementById('company-detail-panel').innerHTML = `
     <div class="company-detail-empty">
-      <div style="font-size:48px;">ð¢</div>
+      <div style="font-size:48px;">🏢</div>
       <div style="font-size:14px;">Select a company to view details</div>
       <button class="btn btn-ghost btn-sm" onclick="openAddCompanyModal()">+ Add your first company</button>
     </div>`;
@@ -4358,11 +4358,11 @@ We have not included for insulation for interior partitions.
 We have not included for smoke separation in attic space.
 Mech Room drywall is not included unless mentioned above.
 Ceiling Texture cracks from existing drywall is not covered and to be charged as an extra.`,
-  hourlyRates: `Site Foreman â $65.00/hr
-Journeyman â $60.00/hr
-Apprentice â $52.00/hr
-Labourer â $45.00/hr
-Service â $70.00/hr + $125 Trip Charge`,
+  hourlyRates: `Site Foreman — $65.00/hr
+Journeyman — $60.00/hr
+Apprentice — $52.00/hr
+Labourer — $45.00/hr
+Service — $70.00/hr + $125 Trip Charge`,
   termsAndConditions: `1. Scope and Validity
 This quotation outlines the scope of work, materials, and services as described herein. Any additions, deletions, or modifications must be requested in writing and will be subject to a revised quotation. This quotation is valid for 45 days from the date of issue.
 
@@ -4470,7 +4470,7 @@ function renderMyLogoPreview() {
   if (myCompany.logoDataUrl) {
     el.innerHTML = `<img src="${myCompany.logoDataUrl}" style="width:100%;height:100%;object-fit:contain;padding:4px;">`;
   } else {
-    el.innerHTML = 'ðï¸';
+    el.innerHTML = '🏗️';
   }
 }
 
@@ -4523,13 +4523,13 @@ function updatePreview2() {
   const rateItems = toList(hourly);
   const termItems = toList(terms2);
 
-  // Parse hourly rates â split on em-dash, en-dash, or " - $"
+  // Parse hourly rates — split on em-dash, en-dash, or " - $"
   const rateRows = rateItems.map(item => {
-    const parts = item.split(/\s*[ââ]\s*|\s+-\s+(?=\$)/);
+    const parts = item.split(/\s*[—–]\s*|\s+-\s+(?=\$)/);
     return { role: parts[0]?.trim() || item, rate: parts[1]?.trim() || '' };
   });
 
-  // Terms â detect "N. Title\nBody" pattern
+  // Terms — detect "N. Title\nBody" pattern
   const tcRows = [];
   let i = 0;
   while (i < termItems.length) {
@@ -4593,13 +4593,13 @@ function updatePreview2() {
           ${logoHtml}
           <div>
             <div style="font-size:11pt;font-weight:800;color:#0066cc;line-height:1;letter-spacing:0.3px;margin-bottom:2px;">${myCompany.name || 'Quality Gypsum Services Ltd'}</div>
-            <div style="font-size:6.5pt;color:#888;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px;">Best Ideas Â· Best Solutions Â· Best Results</div>
+            <div style="font-size:6.5pt;color:#888;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px;">Best Ideas · Best Solutions · Best Results</div>
           </div>
         </div>
         <div style="text-align:right;flex-shrink:0;">
           <div style="font-size:8pt;font-weight:700;color:#888;letter-spacing:1px;text-transform:uppercase;">Project</div>
-          <div style="font-size:12pt;font-weight:700;color:#1a1a1a;">${project || 'â'}</div>
-          <div style="font-size:8pt;color:#888;margin-top:2px;">Page 2 of 2 â General Conditions</div>
+          <div style="font-size:12pt;font-weight:700;color:#1a1a1a;">${project || '—'}</div>
+          <div style="font-size:8pt;color:#888;margin-top:2px;">Page 2 of 2 — General Conditions</div>
         </div>
       </div>
       <div class="p2-header-line"></div>
@@ -4610,17 +4610,17 @@ function updatePreview2() {
       <div class="p2-sec-hdr">General Inclusions &amp; Exclusions</div>
       <div class="p2-inc-exc">
         <div class="p2-box inc">
-          <div class="p2-box-hdr">â General Inclusions</div>
+          <div class="p2-box-hdr">✓ General Inclusions</div>
           <ul>${incItems.map(x=>`<li>${x}</li>`).join('')}</ul>
         </div>
         <div class="p2-box exc">
-          <div class="p2-box-hdr">â General Exclusions</div>
+          <div class="p2-box-hdr">✗ General Exclusions</div>
           <ul>${excItems.map(x=>`<li>${x}</li>`).join('')}</ul>
         </div>
       </div>` : ''}
 
       ${rateRows.length ? `
-      <div class="p2-rates-lbl">${myCompany.name || 'Quality Gypsum'} Hourly Rates â For Change Orders &amp; T&amp;M Work</div>
+      <div class="p2-rates-lbl">${myCompany.name || 'Quality Gypsum'} Hourly Rates — For Change Orders &amp; T&amp;M Work</div>
       <table class="p2-rates-tbl">
         <thead><tr><td>Role</td><td>Hourly Rate</td></tr></thead>
         <tbody>${rateRows.map((r,i)=>`<tr><td>${r.role}</td><td>${r.rate}</td></tr>`).join('')}</tbody>
@@ -4652,7 +4652,7 @@ function updatePreview2() {
 
       <div class="p2-footer">
         ${myCompany.name || 'Quality Gypsum Services Ltd.'} &nbsp;|&nbsp; ${myCompany.address || '85 Walgrove Rise SE, Calgary, AB T2X 4E9'} &nbsp;|&nbsp; ${myCompany.phone || '(403) 809-2908'} &nbsp;|&nbsp; ${myCompany.email || 'info@qualitygypsum.ca'} &nbsp;|&nbsp; ${myCompany.website || 'www.qualitygypsum.ca'}<br>
-        <em>At Quality Gypsum, we don't just build walls â we build relationships.</em>
+        <em>At Quality Gypsum, we don't just build walls — we build relationships.</em>
       </div>
     </div>
   `;
@@ -4677,7 +4677,7 @@ function updatePreview() {
   const terms          = document.getElementById('p-terms')?.value || '';
 
   const fmtDate = (v) => {
-    if (!v) return 'â';
+    if (!v) return '—';
     const d = new Date(v + 'T00:00:00');
     const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
@@ -4692,14 +4692,14 @@ function updatePreview() {
 
   // Compute expiry date from quote date + valid days
   const expiryDate = (() => {
-    if (!dateVal || !quoteValid) return 'â';
+    if (!dateVal || !quoteValid) return '—';
     const d = new Date(dateVal + 'T00:00:00');
     d.setDate(d.getDate() + parseInt(quoteValid));
     const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
   })();
 
-  // Quote number â generate from date or use placeholder
+  // Quote number — generate from date or use placeholder
   const quoteNum = dateVal
     ? 'QGS-' + dateVal.replace(/-/g,'').slice(2)
     : 'QGS-[QUOTE#]';
@@ -4714,12 +4714,12 @@ function updatePreview() {
   const grandTotal = proposalCategories.reduce((a,cat) => a + cat.items.reduce((b,li) => b+(li.qty*li.price),0), 0);
   const multiCat   = proposalCategories.length > 1;
 
-  // ââ Logo / company block ââââââââââââââââââââââââââââââââââ
+  // ── Logo / company block ──────────────────────────────────
   const logoHtml = myCompany.logoDataUrl
     ? `<img src="${myCompany.logoDataUrl}" style="height:110px;max-width:160px;object-fit:contain;display:block;flex-shrink:0;">`
     : ``;
 
-  // ââ Scope / pricing HTML ââââââââââââââââââââââââââââââââââ
+  // ── Scope / pricing HTML ──────────────────────────────────
   const categoriesHtml = proposalCategories.map((cat, ci) => {
     const catTotal    = cat.items.reduce((a,li) => a+(li.qty*li.price),0);
     const visibleItems = cat.items.filter(li => li.desc || li.price);
@@ -4756,7 +4756,7 @@ function updatePreview() {
           <tbody>
             ${visibleItems.map((li,i) => `
               <tr style="background:${i%2===0?'#fff':'#fafafa'};">
-                <td style="padding:6px 10px;border-bottom:1px solid #eee;font-size:8.5pt;color:#1a1a1a;">${li.desc || 'â'}</td>
+                <td style="padding:6px 10px;border-bottom:1px solid #eee;font-size:8.5pt;color:#1a1a1a;">${li.desc || '—'}</td>
                 <td style="padding:6px 10px;border-bottom:1px solid #eee;font-size:8.5pt;color:#555;text-align:center;">${li.qty}</td>
                 <td style="padding:6px 10px;border-bottom:1px solid #eee;font-size:8.5pt;color:#555;text-align:right;font-family:monospace;">${fmtFull(li.price)}</td>
                 <td style="padding:6px 10px;border-bottom:1px solid #eee;font-size:8.5pt;font-weight:700;color:#1a1a1a;text-align:right;font-family:monospace;">${fmtFull(li.qty*li.price)}</td>
@@ -4808,7 +4808,7 @@ function updatePreview() {
           ${logoHtml}
           <div>
             <div style="font-size:11pt;font-weight:800;color:#0066cc;line-height:1;letter-spacing:0.3px;margin-bottom:2px;">${myCompany.name || 'Quality Gypsum Services Ltd'}</div>
-            <div style="font-size:6.5pt;color:#888;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:5px;">Best Ideas Â· Best Solutions Â· Best Results</div>
+            <div style="font-size:6.5pt;color:#888;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:5px;">Best Ideas · Best Solutions · Best Results</div>
             <div style="font-size:7.5pt;color:#555;line-height:1.7;">
               ${myCompany.website ? myCompany.website.replace(/https?:\/\//,'') : 'www.qualitygypsum.ca'} &nbsp;|&nbsp; ${myCompany.email || 'info@qualitygypsum.ca'} &nbsp;|&nbsp; ${myCompany.phone || '(403) 809-2908'}<br>
               ${myCompany.address || '85 Walgrove Rise SE, Calgary, AB T2X 4E9'}
@@ -4863,7 +4863,7 @@ function updatePreview() {
       <!-- FOOTER -->
       <div class="qgs-footer">
         ${myCompany.name || 'Quality Gypsum Services Ltd.'} &nbsp;|&nbsp; ${myCompany.address || '85 Walgrove Rise SE, Calgary, AB T2X 4E9'} &nbsp;|&nbsp; ${myCompany.phone || '(403) 809-2908'} &nbsp;|&nbsp; ${myCompany.email || 'info@qualitygypsum.ca'} &nbsp;|&nbsp; ${myCompany.website ? myCompany.website.replace(/https?:\/\//,'') : 'www.qualitygypsum.ca'}<br>
-        <em>At Quality Gypsum, we don't just build walls â we build relationships.</em>
+        <em>At Quality Gypsum, we don't just build walls — we build relationships.</em>
       </div>
 
     </div>
@@ -4989,7 +4989,7 @@ async function saveCurrentQuote() {
       }).select('id').single();
       if (insErr) { console.error('Quote insert error:', insErr); showToast('Error: ' + insErr.message); return; }
     }
-    showToast(`Quote "${label}" saved â`);
+    showToast(`Quote "${label}" saved ✓`);
     renderSavedQuotesList();
   } catch(e) {
     console.error('Quote save error:', e);
@@ -5042,15 +5042,15 @@ async function renderSavedQuotesList() {
   const bidName = currentProposalBidId ? (bids.find(b => b.id === currentProposalBidId)?.name || '') : '';
   
   if (!quotes.length) {
-    el.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--muted);font-size:12px;"><div style="font-size:28px;margin-bottom:10px;">ð</div>No saved quotes for this bid yet.<br>Fill out the form and click <strong>Save Quote</strong>.</div>';
+    el.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--muted);font-size:12px;"><div style="font-size:28px;margin-bottom:10px;">📋</div>No saved quotes for this bid yet.<br>Fill out the form and click <strong>Save Quote</strong>.</div>';
     return;
   }
   el.innerHTML = '<div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;padding:0 2px;">'+quotes.length+' quote'+(quotes.length!==1?'s':'')+' for this bid</div>' +
   quotes.map(q => {
     const d = q.quote_data || {};
     const label = q.quote_label || q.quote_num || q.project || 'Untitled Quote';
-    const subLabel = [q.quote_num, q.project].filter(Boolean).join(' Â· ');
-    const client = d.clientCompany || d.client || 'â';
+    const subLabel = [q.quote_num, q.project].filter(Boolean).join(' · ');
+    const client = d.clientCompany || d.client || '—';
     const savedAt = q.updated_at ? new Date(q.updated_at).toLocaleDateString('en-CA', {month:'short',day:'numeric',year:'numeric'}) : '';
     const total = (d.categories || []).reduce((a,c) => a + (c.items||[]).reduce((b,li) => b+(li.qty*li.price),0), 0);
     return '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:10px;">' +
@@ -5058,14 +5058,14 @@ async function renderSavedQuotesList() {
         '<div style="font-size:13px;font-weight:700;color:var(--text);line-height:1.3;flex:1;margin-right:8px;">' + label + '</div>' +
         '<div style="display:flex;gap:4px;flex-shrink:0;">' +
           '<button onclick="loadQuoteById(' + q.id + ')" style="background:var(--accent);color:#000;border:none;border-radius:4px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;">Load</button>' +
-          '<button onclick="deleteQuoteAndRefresh(' + q.id + ')" style="background:transparent;color:var(--lost);border:1px solid var(--border);border-radius:4px;padding:4px 8px;font-size:11px;cursor:pointer;">â</button>' +
+          '<button onclick="deleteQuoteAndRefresh(' + q.id + ')" style="background:transparent;color:var(--lost);border:1px solid var(--border);border-radius:4px;padding:4px 8px;font-size:11px;cursor:pointer;">✕</button>' +
         '</div>' +
       '</div>' +
       (subLabel ? '<div style="font-size:10px;color:var(--muted);margin-bottom:3px;">' + subLabel + '</div>' : '') +
       '<div style="display:flex;gap:12px;font-size:11px;color:var(--muted);">' +
-        '<span>ð¢ ' + client + '</span>' +
+        '<span>🏢 ' + client + '</span>' +
         (total ? '<span style="color:var(--accent);font-weight:600;">$' + total.toLocaleString() + '</span>' : '') +
-        (savedAt ? '<span>ð¾ ' + savedAt + '</span>' : '') +
+        (savedAt ? '<span>💾 ' + savedAt + '</span>' : '') +
       '</div></div>';
   }).join('');
 }
@@ -5076,7 +5076,7 @@ async function deleteQuoteAndRefresh(id) {
   renderSavedQuotesList();
 }
 
-// ââ Export PDF â uses Blob + hidden iframe print ââââââââââââââââââââââââ
+// ── Export PDF — uses Blob + hidden iframe print ────────────────────────
 function exportProposalPDF() {
   updatePreview();
   updatePreview2();
@@ -5205,7 +5205,7 @@ function renderEquipmentPage() {
   const grid = document.getElementById('equip-grid');
   if (!filtered.length) {
     grid.innerHTML = `<div style="text-align:center;padding:60px 20px;color:var(--muted);">
-      <div style="font-size:40px;margin-bottom:12px;">ðï¸</div>
+      <div style="font-size:40px;margin-bottom:12px;">🏗️</div>
       <div style="font-size:14px;margin-bottom:6px;">No equipment ${search ? 'found' : 'yet'}</div>
       <div style="font-size:12px;">Click <strong>+ Add Equipment</strong> to get started</div>
     </div>`;
@@ -5219,30 +5219,30 @@ function renderEquipmentPage() {
       const statusLabels = { available:'Available', deployed:'On Site', transit:'In Transit', maintenance:'Maintenance' };
       const activeDeploy = (eq.deployments||[]).find(d => !d.returned);
       const thumb = eq.photos?.length ? eq.photos[0] : null;
-      const catIcons = { Scaffolding:'ðª', Ladders:'ðª', 'Power Tools':'ð§', Lifts:'ðï¸', Generators:'â¡', Welding:'ð¥', Safety:'ð¦º', Vehicles:'ð', Other:'ð¦' };
+      const catIcons = { Scaffolding:'🪜', Ladders:'🪜', 'Power Tools':'🔧', Lifts:'🏗️', Generators:'⚡', Welding:'🔥', Safety:'🦺', Vehicles:'🚛', Other:'📦' };
 
       return `
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:all 0.15s;border-left:3px solid ${statusColors[status]};" onclick="openEquipDetail('${eq.id}')">
           ${thumb ? `<div style="height:120px;background:url('${thumb}') center/cover;border-bottom:1px solid var(--border);"></div>` : 
-            `<div style="height:80px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:32px;border-bottom:1px solid var(--border);">${catIcons[eq.category]||'ð¦'}</div>`}
+            `<div style="height:80px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:32px;border-bottom:1px solid var(--border);">${catIcons[eq.category]||'📦'}</div>`}
           <div style="padding:14px;">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
               <div>
                 <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;">${eq.name}</div>
-                <div style="font-size:11px;color:var(--muted);">${eq.category}${eq.serial ? ' Â· ' + eq.serial : ''}</div>
+                <div style="font-size:11px;color:var(--muted);">${eq.category}${eq.serial ? ' · ' + eq.serial : ''}</div>
               </div>
               <span style="font-size:10px;padding:3px 8px;border-radius:10px;font-weight:700;background:${statusColors[status]}20;color:${statusColors[status]};">${statusLabels[status]}</span>
             </div>
             ${activeDeploy ? `
               <div style="background:var(--surface2);border-radius:6px;padding:8px 10px;margin-bottom:8px;font-size:11px;">
-                <div style="color:var(--text);font-weight:600;margin-bottom:2px;">ð ${activeDeploy.jobsite}</div>
-                <div style="color:var(--muted);">Taken by ${activeDeploy.takenBy} Â· ${activeDeploy.dateOut || ''}${activeDeploy.estReturn ? ' â Est. ' + activeDeploy.estReturn : ''}</div>
+                <div style="color:var(--text);font-weight:600;margin-bottom:2px;">📍 ${activeDeploy.jobsite}</div>
+                <div style="color:var(--muted);">Taken by ${activeDeploy.takenBy} · ${activeDeploy.dateOut || ''}${activeDeploy.estReturn ? ' → Est. ' + activeDeploy.estReturn : ''}</div>
               </div>` : ''}
             <div style="display:flex;gap:6px;flex-wrap:wrap;">
-              ${status === 'available' ? `<button onclick="event.stopPropagation();openDeployModal('${eq.id}')" style="padding:4px 10px;border-radius:5px;border:none;background:var(--accent);color:#000;font-size:11px;font-weight:700;cursor:pointer;">ð Deploy</button>` : ''}
-              ${status === 'deployed' ? `<button onclick="event.stopPropagation();openReturnModal('${eq.id}')" style="padding:4px 10px;border-radius:5px;border:none;background:#2ecc71;color:#000;font-size:11px;font-weight:700;cursor:pointer;">â© Return to Shop</button>` : ''}
-              <button onclick="event.stopPropagation();openEditEquipment('${eq.id}')" style="padding:4px 10px;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;cursor:pointer;">âï¸ Edit</button>
-              <button onclick="event.stopPropagation();deleteEquipment('${eq.id}')" style="padding:4px 10px;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--lost);font-size:11px;cursor:pointer;">ð</button>
+              ${status === 'available' ? `<button onclick="event.stopPropagation();openDeployModal('${eq.id}')" style="padding:4px 10px;border-radius:5px;border:none;background:var(--accent);color:#000;font-size:11px;font-weight:700;cursor:pointer;">🚛 Deploy</button>` : ''}
+              ${status === 'deployed' ? `<button onclick="event.stopPropagation();openReturnModal('${eq.id}')" style="padding:4px 10px;border-radius:5px;border:none;background:#2ecc71;color:#000;font-size:11px;font-weight:700;cursor:pointer;">↩ Return to Shop</button>` : ''}
+              <button onclick="event.stopPropagation();openEditEquipment('${eq.id}')" style="padding:4px 10px;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;cursor:pointer;">✏️ Edit</button>
+              <button onclick="event.stopPropagation();deleteEquipment('${eq.id}')" style="padding:4px 10px;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--lost);font-size:11px;cursor:pointer;">🗑</button>
             </div>
           </div>
         </div>`;
@@ -5309,7 +5309,7 @@ function renderEquipPhotosPrev() {
   el.innerHTML = _editEquipPhotos.map((p, i) => `
     <div style="position:relative;width:80px;height:80px;border-radius:6px;overflow:hidden;border:1px solid var(--border);">
       <img src="${p}" style="width:100%;height:100%;object-fit:cover;">
-      <button onclick="_editEquipPhotos.splice(${i},1);renderEquipPhotosPrev();" style="position:absolute;top:2px;right:2px;background:rgba(0,0,0,0.7);color:#fff;border:none;border-radius:50%;width:18px;height:18px;font-size:10px;cursor:pointer;line-height:1;">â</button>
+      <button onclick="_editEquipPhotos.splice(${i},1);renderEquipPhotosPrev();" style="position:absolute;top:2px;right:2px;background:rgba(0,0,0,0.7);color:#fff;border:none;border-radius:50%;width:18px;height:18px;font-size:10px;cursor:pointer;line-height:1;">✕</button>
     </div>
   `).join('');
 }
@@ -5368,10 +5368,10 @@ function openDeployModal(id) {
   document.getElementById('equip-deploy-title').textContent = 'Deploy Equipment';
   document.getElementById('equip-deploy-info').innerHTML = `
     <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--surface2);border-radius:8px;">
-      <div style="font-size:24px;">ð</div>
+      <div style="font-size:24px;">🚛</div>
       <div>
         <div style="font-size:13px;font-weight:700;color:var(--text);">${eq.name}</div>
-        <div style="font-size:11px;color:var(--muted);">${eq.category}${eq.serial ? ' Â· ' + eq.serial : ''} Â· Qty: ${eq.qty}</div>
+        <div style="font-size:11px;color:var(--muted);">${eq.category}${eq.serial ? ' · ' + eq.serial : ''} · Qty: ${eq.qty}</div>
       </div>
     </div>`;
 
@@ -5449,9 +5449,9 @@ function openReturnModal(id) {
   document.getElementById('equip-deploy-title').textContent = 'Return Equipment to Shop';
   document.getElementById('equip-deploy-info').innerHTML = `
     <div style="padding:10px 14px;background:var(--surface2);border-radius:8px;">
-      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;">â© ${eq.name}</div>
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;">↩ ${eq.name}</div>
       <div style="font-size:11px;color:var(--muted);">Currently at: <strong style="color:var(--text);">${active.jobsite}</strong></div>
-      <div style="font-size:11px;color:var(--muted);">Taken by: ${active.takenBy} Â· Out since: ${active.dateOut || 'N/A'}</div>
+      <div style="font-size:11px;color:var(--muted);">Taken by: ${active.takenBy} · Out since: ${active.dateOut || 'N/A'}</div>
     </div>`;
 
   document.getElementById('equip-deploy-fields').style.display = 'none';
@@ -5536,10 +5536,10 @@ function openEquipDetail(id) {
               <tr style="border-top:1px solid var(--border);">
                 <td style="padding:8px 10px;color:var(--text);font-weight:600;">${d.jobsite}</td>
                 <td style="padding:8px 10px;color:var(--muted);">${d.takenBy}</td>
-                <td style="padding:8px 10px;color:var(--muted);">${d.dateOut || 'â'}</td>
+                <td style="padding:8px 10px;color:var(--muted);">${d.dateOut || '—'}</td>
                 <td style="padding:8px 10px;">${d.returned ? 
-                  `<span style="color:#2ecc71;font-weight:600;">${d.dateReturned || 'Yes'}</span>${d.returnCondition ? ` Â· ${d.returnCondition}` : ''}` : 
-                  `<span style="color:#3b82f6;font-weight:600;">On Site</span>${d.estReturn ? ` Â· Est. ${d.estReturn}` : ''}`}</td>
+                  `<span style="color:#2ecc71;font-weight:600;">${d.dateReturned || 'Yes'}</span>${d.returnCondition ? ` · ${d.returnCondition}` : ''}` : 
+                  `<span style="color:#3b82f6;font-weight:600;">On Site</span>${d.estReturn ? ` · Est. ${d.estReturn}` : ''}`}</td>
                 <td style="padding:8px 10px;">
                   ${d.photoOut ? `<img src="${d.photoOut}" style="height:32px;border-radius:4px;cursor:pointer;margin-right:4px;" onclick="window.open('${d.photoOut}','_blank')" title="Pickup photo">` : ''}
                   ${d.photoReturn ? `<img src="${d.photoReturn}" style="height:32px;border-radius:4px;cursor:pointer;" onclick="window.open('${d.photoReturn}','_blank')" title="Return photo">` : ''}
@@ -5564,7 +5564,7 @@ function openEquipDetail(id) {
       </div>
       <div style="background:var(--surface2);border-radius:8px;padding:12px;">
         <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Serial / Tag</div>
-        <div style="font-size:13px;color:var(--text);">${eq.serial || 'â'}</div>
+        <div style="font-size:13px;color:var(--text);">${eq.serial || '—'}</div>
       </div>
       <div style="background:var(--surface2);border-radius:8px;padding:12px;">
         <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Quantity</div>
@@ -5576,16 +5576,16 @@ function openEquipDetail(id) {
       </div>
       <div style="background:var(--surface2);border-radius:8px;padding:12px;">
         <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Value</div>
-        <div style="font-size:13px;color:var(--accent);font-weight:700;">${eq.value ? '$' + parseFloat(eq.value).toLocaleString(undefined,{minimumFractionDigits:2}) : 'â'}</div>
+        <div style="font-size:13px;color:var(--accent);font-weight:700;">${eq.value ? '$' + parseFloat(eq.value).toLocaleString(undefined,{minimumFractionDigits:2}) : '—'}</div>
       </div>
     </div>
     ${eq.notes ? `<div style="background:var(--surface2);border-radius:8px;padding:12px;margin-bottom:16px;"><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Notes</div><div style="font-size:12px;color:var(--text);white-space:pre-line;">${eq.notes}</div></div>` : ''}
     ${deploymentsHtml}
     <div style="display:flex;gap:8px;margin-top:16px;">
-      ${status === 'available' ? `<button class="btn btn-primary" onclick="document.getElementById('equip-detail-modal').classList.remove('open');openDeployModal('${eq.id}')">ð Deploy to Site</button>` : ''}
-      ${status === 'deployed' ? `<button class="btn btn-primary" style="background:#2ecc71;" onclick="document.getElementById('equip-detail-modal').classList.remove('open');openReturnModal('${eq.id}')">â© Return to Shop</button>` : ''}
-      ${status === 'maintenance' ? `<button class="btn btn-primary" onclick="clearMaintenance('${eq.id}')">â Mark as Available</button>` : ''}
-      <button class="btn btn-ghost" onclick="document.getElementById('equip-detail-modal').classList.remove('open');openEditEquipment('${eq.id}')">âï¸ Edit</button>
+      ${status === 'available' ? `<button class="btn btn-primary" onclick="document.getElementById('equip-detail-modal').classList.remove('open');openDeployModal('${eq.id}')">🚛 Deploy to Site</button>` : ''}
+      ${status === 'deployed' ? `<button class="btn btn-primary" style="background:#2ecc71;" onclick="document.getElementById('equip-detail-modal').classList.remove('open');openReturnModal('${eq.id}')">↩ Return to Shop</button>` : ''}
+      ${status === 'maintenance' ? `<button class="btn btn-primary" onclick="clearMaintenance('${eq.id}')">✅ Mark as Available</button>` : ''}
+      <button class="btn btn-ghost" onclick="document.getElementById('equip-detail-modal').classList.remove('open');openEditEquipment('${eq.id}')">✏️ Edit</button>
     </div>
   `;
 
@@ -5642,7 +5642,7 @@ function openAddResiModal() {
   _editResiId = null;
   var h = '<div class="modal-overlay open" id="resi-modal"><div class="modal modal-lg" style="max-width:800px;"><div class="modal-header"><div class="modal-title" id="resi-modal-title">Add Resi Project</div><button class="modal-close" onclick="document.getElementById(\'resi-modal\').remove()">&times;</button></div><div class="modal-body">' +
     '<div class="form-grid">' +
-      '<div class="form-group form-full"><label class="form-label">Project (from Won Bids) *</label><select class="form-select" id="resi-bid-select" onchange="onResiBidChange()"><option value="">â Select a bid â</option>' + bids.filter(function(b){return b.status==='won';}).map(function(b){return '<option value="'+b.id+'">'+b.name+'</option>';}).join('') + '</select></div>' +
+      '<div class="form-group form-full"><label class="form-label">Project (from Won Bids) *</label><select class="form-select" id="resi-bid-select" onchange="onResiBidChange()"><option value="">— Select a bid —</option>' + bids.filter(function(b){return b.status==='won';}).map(function(b){return '<option value="'+b.id+'">'+b.name+'</option>';}).join('') + '</select></div>' +
       '<div class="form-group form-full"><label class="form-label">Project Name</label><input type="text" class="form-input" id="resi-name" placeholder="Auto-filled from bid or type manually"></div>' +
       '<div class="form-group"><label class="form-label">Contact Person</label><input type="text" class="form-input" id="resi-person" placeholder="e.g. Fabian Vargas"></div>' +
       '<div class="form-group"><label class="form-label">Builder</label><input type="text" class="form-input" id="resi-builder" placeholder="e.g. LD&A"></div>' +
@@ -5766,10 +5766,10 @@ async function renderResiSchedule() {
     await loadResiData();
   }
   if (!resiProjects.length) {
-    grid.innerHTML = '<div style="text-align:center;padding:60px 20px;color:var(--muted);"><div style="font-size:40px;margin-bottom:12px;">ð </div><div style="font-size:14px;margin-bottom:6px;">No residential projects yet</div><div style="font-size:12px;">Click <strong>+ Add Project</strong> to create a drywall schedule</div></div>';
+    grid.innerHTML = '<div style="text-align:center;padding:60px 20px;color:var(--muted);"><div style="font-size:40px;margin-bottom:12px;">🏠</div><div style="font-size:14px;margin-bottom:6px;">No residential projects yet</div><div style="font-size:12px;">Click <strong>+ Add Project</strong> to create a drywall schedule</div></div>';
     return;
   }
-  var fmtD = function(d) { if (!d) return 'â'; var dt = new Date(d + 'T12:00:00'); return dt.toLocaleDateString('en-CA', {month:'short',day:'numeric'}); };
+  var fmtD = function(d) { if (!d) return '—'; var dt = new Date(d + 'T12:00:00'); return dt.toLocaleDateString('en-CA', {month:'short',day:'numeric'}); };
   var statusColors = { Active:'#3b82f6', Scheduled:'#f5a623', Completed:'#2ecc71', 'On Hold':'#888' };
   var phaseLabels = [
     {key:'ins',label:'Ins/IPDS'},{key:'dwipds',label:'DW IPDS'},{key:'sprayfoam',label:'Spray Foam'},
@@ -5791,9 +5791,9 @@ async function renderResiSchedule() {
       var sc = statusColors[p.status] || '#888';
       var dates = p.dates || {};
       return '<tr style="border-bottom:1px solid var(--border);transition:background 0.12s;" onmouseenter="this.style.background=\'rgba(255,255,255,0.02)\'" onmouseleave="this.style.background=\'transparent\'">' +
-        '<td style="padding:10px;position:sticky;left:0;background:var(--bg);z-index:1;"><div style="font-weight:600;color:var(--text);margin-bottom:2px;">' + p.name + '</div><div style="font-size:10px;color:var(--muted);">' + (p.person || '') + (p.dwSqft ? ' Â· ' + p.dwSqft + ' sqft' : '') + '</div></td>' +
+        '<td style="padding:10px;position:sticky;left:0;background:var(--bg);z-index:1;"><div style="font-weight:600;color:var(--text);margin-bottom:2px;">' + p.name + '</div><div style="font-size:10px;color:var(--muted);">' + (p.person || '') + (p.dwSqft ? ' · ' + p.dwSqft + ' sqft' : '') + '</div></td>' +
         '<td style="padding:10px;"><span style="font-size:10px;padding:3px 8px;border-radius:10px;font-weight:700;background:' + sc + '20;color:' + sc + ';">' + p.status + '</span></td>' +
-        '<td style="padding:10px;color:var(--muted);">' + (p.builder || 'â') + '</td>' +
+        '<td style="padding:10px;color:var(--muted);">' + (p.builder || '—') + '</td>' +
         phaseLabels.map(function(ph) {
           var v = dates[ph.key];
           var today = new Date().toISOString().split('T')[0];
@@ -5801,12 +5801,12 @@ async function renderResiSchedule() {
           var isToday = v && v === today;
           var color = isToday ? 'var(--accent)' : (isPast ? 'var(--muted)' : 'var(--text)');
           var weight = isToday ? '700' : '400';
-          return '<td style="padding:10px;text-align:center;font-size:11px;font-family:DM Mono,monospace;color:' + color + ';font-weight:' + weight + ';">' + (v ? fmtD(v) : 'â') + '</td>';
+          return '<td style="padding:10px;text-align:center;font-size:11px;font-family:DM Mono,monospace;color:' + color + ';font-weight:' + weight + ';">' + (v ? fmtD(v) : '—') + '</td>';
         }).join('') +
         '<td style="padding:10px;"><div class="row-actions" style="opacity:1;gap:6px;">' +
-          '<div class="action-btn" onclick="openEditResiModal(' + p.id + ')" title="Edit">âï¸</div>' +
-          '<div class="action-btn" onclick="exportResiPDF(' + p.id + ')" title="Export PDF" style="color:var(--accent);">ð</div>' +
-          '<div class="action-btn del" onclick="deleteResiProject(' + p.id + ')" title="Delete">ð</div>' +
+          '<div class="action-btn" onclick="openEditResiModal(' + p.id + ')" title="Edit">✏️</div>' +
+          '<div class="action-btn" onclick="exportResiPDF(' + p.id + ')" title="Export PDF" style="color:var(--accent);">📄</div>' +
+          '<div class="action-btn del" onclick="deleteResiProject(' + p.id + ')" title="Delete">🗑</div>' +
         '</div></td>' +
       '</tr>';
     }).join('') +
@@ -5817,7 +5817,7 @@ function exportResiPDF(id) {
   var p = resiProjects.find(function(r) { return r.id == id; });
   if (!p) return;
   var dates = p.dates || {};
-  var fmtD = function(d) { if (!d) return 'â'; return new Date(d + 'T12:00:00').toLocaleDateString('en-CA', {month:'short',day:'numeric',year:'numeric'}); };
+  var fmtD = function(d) { if (!d) return '—'; return new Date(d + 'T12:00:00').toLocaleDateString('en-CA', {month:'short',day:'numeric',year:'numeric'}); };
   var phases = [
     {key:'ins',label:'Ins / IPDS'},{key:'dwipds',label:'DW IPDS / Count'},{key:'sprayfoam',label:'Spray Foam'},
     {key:'insulation',label:'Insulation'},{key:'delivery',label:'DW Delivery'},{key:'drywall',label:'Drywall'},
@@ -5834,7 +5834,7 @@ function exportResiPDF(id) {
     '<div style="background:#1a1a1a;color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;">' +
       '<div style="display:flex;align-items:center;gap:14px;">' +
         (myCompany.logoDataUrl ? '<img src="' + myCompany.logoDataUrl + '" style="height:40px;object-fit:contain;">' : '') +
-        '<div><div style="font-size:14pt;font-weight:700;">' + (myCompany.name || '') + '</div><div style="font-size:8pt;color:#ccc;">' + (myCompany.phone || '') + ' Â· ' + (myCompany.email || '') + '</div></div>' +
+        '<div><div style="font-size:14pt;font-weight:700;">' + (myCompany.name || '') + '</div><div style="font-size:8pt;color:#ccc;">' + (myCompany.phone || '') + ' · ' + (myCompany.email || '') + '</div></div>' +
       '</div>' +
       '<div style="text-align:right;"><div style="font-size:8pt;color:#ccc;">DRYWALL SCHEDULE</div></div>' +
     '</div>' +
@@ -5842,14 +5842,14 @@ function exportResiPDF(id) {
     '<div style="border:1px solid #d0d0d0;border-top:none;padding:14px 18px;margin-bottom:14px;">' +
       '<div style="font-size:14pt;font-weight:700;margin-bottom:6px;">' + p.name + '</div>' +
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:9pt;color:#555;">' +
-        '<div><strong>Contact:</strong> ' + (p.person || 'â') + '</div>' +
-        '<div><strong>Builder:</strong> ' + (p.builder || 'â') + '</div>' +
-        '<div><strong>Status:</strong> ' + (p.status || 'â') + '</div>' +
-        '<div><strong>Lockbox:</strong> ' + (p.lockbox || 'â') + '</div>' +
-        '<div><strong>Drywall Sqft:</strong> ' + (p.dwSqft || 'â') + '</div>' +
-        '<div><strong>Garage Sqft:</strong> ' + (p.garageSqft || 'â') + '</div>' +
-        '<div><strong>Floor Sqft:</strong> ' + (p.floorSqft || 'â') + '</div>' +
-        '<div><strong>Garage Floor Sqft:</strong> ' + (p.garageFloorSqft || 'â') + '</div>' +
+        '<div><strong>Contact:</strong> ' + (p.person || '—') + '</div>' +
+        '<div><strong>Builder:</strong> ' + (p.builder || '—') + '</div>' +
+        '<div><strong>Status:</strong> ' + (p.status || '—') + '</div>' +
+        '<div><strong>Lockbox:</strong> ' + (p.lockbox || '—') + '</div>' +
+        '<div><strong>Drywall Sqft:</strong> ' + (p.dwSqft || '—') + '</div>' +
+        '<div><strong>Garage Sqft:</strong> ' + (p.garageSqft || '—') + '</div>' +
+        '<div><strong>Floor Sqft:</strong> ' + (p.floorSqft || '—') + '</div>' +
+        '<div><strong>Garage Floor Sqft:</strong> ' + (p.garageFloorSqft || '—') + '</div>' +
       '</div>' +
       (p.specs ? '<div style="margin-top:8px;font-size:9pt;color:#333;background:#f5f5f5;padding:8px 10px;border-radius:4px;"><strong>Specs:</strong> ' + p.specs + '</div>' : '') +
     '</div>' +
@@ -5865,10 +5865,10 @@ function exportResiPDF(id) {
           '<li>All trades must have their <strong><u>WCB</u></strong> in place and in good standing, no exceptions.</li>' +
           '<li><strong><em><u>All trades must submit their Hazard assessment with their invoice for each job completed</u></em></strong> (Hazard assessments will be supplied by site supervisors)</li>' +
         '</ul>' +
-        '<p><strong><u>Garbage</u></strong> â please clean up around your site daily and at the end of your scope of work.</p>' +
+        '<p><strong><u>Garbage</u></strong> – please clean up around your site daily and at the end of your scope of work.</p>' +
       '</div>' +
     '</div>' +
-    '<div style="margin-top:20px;border-top:2px solid #f5a623;padding-top:8px;text-align:center;font-size:8pt;color:#888;">' + (myCompany.name || '') + ' Â· ' + (myCompany.phone || '') + ' Â· ' + (myCompany.email || '') + '</div>' +
+    '<div style="margin-top:20px;border-top:2px solid #f5a623;padding-top:8px;text-align:center;font-size:8pt;color:#888;">' + (myCompany.name || '') + ' · ' + (myCompany.phone || '') + ' · ' + (myCompany.email || '') + '</div>' +
     '<scr' + 'ipt>document.title="Schedule - ' + p.name.replace(/"/g,'') + '";window.onafterprint=function(){window.close();};setTimeout(function(){window.print();},500);<\/scr' + 'ipt></body></html>';
 
   var blob = new Blob([html], { type: 'text/html' });
@@ -5880,8 +5880,8 @@ function exportResiPDF(id) {
 function initBillingPage() {
   const sel = document.getElementById('billing-project-select');
   const wonBids = bids.filter(b => b.status === 'won');
-  sel.innerHTML = '<option value="">â Select a project â</option>' +
-    wonBids.map(b => '<option value="' + b.id + '">' + b.name + ' â ' + fmtFull(b.value) + '</option>').join('');
+  sel.innerHTML = '<option value="">— Select a project —</option>' +
+    wonBids.map(b => '<option value="' + b.id + '">' + b.name + ' — ' + fmtFull(b.value) + '</option>').join('');
   
   // If a project was already selected, keep it and show selected state
   if (currentBillingBidId) {
@@ -5890,7 +5890,7 @@ function initBillingPage() {
     if (bid) {
       document.getElementById('billing-project-search').style.display = 'none';
       document.getElementById('billing-project-selected').style.display = 'block';
-      document.getElementById('billing-project-selected-name').textContent = bid.name + ' â ' + fmtFull(bid.value);
+      document.getElementById('billing-project-selected-name').textContent = bid.name + ' — ' + fmtFull(bid.value);
     }
   }
   renderBillingDropdown('');
@@ -5996,7 +5996,7 @@ async function loadBillingDashboard() {
             '<span style="font-size:11px;color:' + pctColor + ';font-weight:600;">' + pctComplete + '%</span>' +
           '</div>' +
         '</td>' +
-        '<td style="padding:10px;text-align:center;"><span style="color:var(--accent);font-size:12px;font-weight:600;">Open â</span></td>' +
+        '<td style="padding:10px;text-align:center;"><span style="color:var(--accent);font-size:12px;font-weight:600;">Open →</span></td>' +
       '</tr>';
     }).join('') +
     '</tbody></table>';
@@ -6014,7 +6014,7 @@ async function openClaimFromDashboard(bidId, claimId) {
   if (bid) {
     document.getElementById('billing-project-search').style.display = 'none';
     document.getElementById('billing-project-selected').style.display = 'block';
-    document.getElementById('billing-project-selected-name').textContent = bid.name + ' â ' + fmtFull(bid.value);
+    document.getElementById('billing-project-selected-name').textContent = bid.name + ' — ' + fmtFull(bid.value);
   }
 }
 
@@ -6038,7 +6038,7 @@ function renderBillingDropdown(q) {
   dd.innerHTML = filtered.map(function(b) {
     return '<div onclick="selectBillingProject(' + b.id + ')" style="padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);transition:background 0.15s;" onmouseenter="this.style.background=\'var(--surface2)\'" onmouseleave="this.style.background=\'transparent\'">' +
       '<div style="font-weight:600;font-size:13px;">' + b.name + '</div>' +
-      '<div style="font-size:11px;color:var(--muted);">' + (b.company_name || '') + (b.value ? ' â¢ ' + fmtFull(b.value) : '') + '</div>' +
+      '<div style="font-size:11px;color:var(--muted);">' + (b.company_name || '') + (b.value ? ' • ' + fmtFull(b.value) : '') + '</div>' +
     '</div>';
   }).join('');
 }
@@ -6051,7 +6051,7 @@ function selectBillingProject(bidId) {
   document.getElementById('billing-project-search').value = '';
   document.getElementById('billing-project-dropdown').style.display = 'none';
   document.getElementById('billing-project-selected').style.display = 'block';
-  document.getElementById('billing-project-selected-name').textContent = bid.name + ' â ' + fmtFull(bid.value);
+  document.getElementById('billing-project-selected-name').textContent = bid.name + ' — ' + fmtFull(bid.value);
   loadBillingProject();
 }
 
@@ -6177,8 +6177,8 @@ function renderHoldbackTracker() {
     var holdbackAmt = grandThisClaim * (hbPct / 100);
     totalHoldback += holdbackAmt;
 
-    var dateStr = c.claim_date ? new Date(c.claim_date + 'T12:00:00').toLocaleDateString('en-CA', {month:'short', day:'numeric', year:'numeric'}) : 'â';
-    var invoiceNum = c.invoice_number || 'â';
+    var dateStr = c.claim_date ? new Date(c.claim_date + 'T12:00:00').toLocaleDateString('en-CA', {month:'short', day:'numeric', year:'numeric'}) : '—';
+    var invoiceNum = c.invoice_number || '—';
 
     return '<tr style="border-bottom:1px solid var(--border);">' +
       '<td style="padding:10px 12px;font-weight:600;">Claim #' + c.claim_number + '</td>' +
@@ -6259,8 +6259,8 @@ function exportHoldbackPDF() {
     totalHoldback += holdbackAmt;
     totalClaimAmt += grandThisClaim;
 
-    var dateStr = c.claim_date ? new Date(c.claim_date + 'T12:00:00').toLocaleDateString('en-CA', {day:'numeric', month:'long', year:'numeric'}) : 'â';
-    var invoiceNum = c.invoice_number || 'â';
+    var dateStr = c.claim_date ? new Date(c.claim_date + 'T12:00:00').toLocaleDateString('en-CA', {day:'numeric', month:'long', year:'numeric'}) : '—';
+    var invoiceNum = c.invoice_number || '—';
     var bg = i % 2 === 0 ? '#ffffff' : '#f8f9fa';
 
     return '<tr style="background:' + bg + ';">' +
@@ -6289,7 +6289,7 @@ function exportHoldbackPDF() {
       '<div style="display:flex;align-items:center;gap:14px;">' +
         (myCompany.logoDataUrl ? '<img src="' + myCompany.logoDataUrl + '" style="height:44px;object-fit:contain;">' : '') +
         '<div><div style="font-size:14pt;font-weight:700;">' + (myCompany.name || '') + '</div>' +
-        '<div style="font-size:8pt;color:#ccc;">' + (myCompany.address || '') + (myCompany.phone ? '  â¢  ' + myCompany.phone : '') + (myCompany.email ? '  â¢  ' + myCompany.email : '') + '</div></div>' +
+        '<div style="font-size:8pt;color:#ccc;">' + (myCompany.address || '') + (myCompany.phone ? '  •  ' + myCompany.phone : '') + (myCompany.email ? '  •  ' + myCompany.email : '') + '</div></div>' +
       '</div>' +
       '<div style="text-align:right;"><div style="font-size:8pt;color:#ccc;">HOLDBACK SUMMARY</div></div>' +
     '</div>' +
@@ -6343,7 +6343,7 @@ function exportHoldbackPDF() {
 
     // Footer
     '<div style="margin-top:20px;border-top:2px solid #f5a623;padding-top:8px;text-align:center;font-size:8pt;color:#888;">' +
-      (myCompany.name || '') + ' Â· ' + (myCompany.phone || '') + ' Â· ' + (myCompany.email || '') +
+      (myCompany.name || '') + ' · ' + (myCompany.phone || '') + ' · ' + (myCompany.email || '') +
     '</div>' +
 
     '<scr' + 'ipt>document.title="Holdback Summary - ' + projectName.replace(/"/g,'') + '";window.onafterprint=function(){window.close();};setTimeout(function(){window.print();},500);<\/scr' + 'ipt>' +
@@ -6351,8 +6351,8 @@ function exportHoldbackPDF() {
 
   var blob = new Blob([html], { type: 'text/html' });
   var w = window.open(URL.createObjectURL(blob), '_blank');
-  if (w) showToast('Holdback PDF â Print dialog opening');
-  else showToast('Popup blocked â please allow popups');
+  if (w) showToast('Holdback PDF — Print dialog opening');
+  else showToast('Popup blocked — please allow popups');
 }
 
 function loadClaimFromSaved(claim) {
@@ -6645,9 +6645,9 @@ function renderCOLines() {
       '<td style="padding:6px 4px;"><input type="number" class="form-input" value="' + (l.value||'') + '" step="0.01" style="padding:4px 8px;font-size:12px;text-align:right;font-family:DM Mono,monospace;" oninput="updateCOLine(' + l.id + ',\'value\',this.value)"></td>' +
       '<td style="padding:6px 4px;"><input type="number" class="form-input" value="' + (l.pctComplete||'') + '" min="0" max="100" step="1" style="padding:4px 8px;font-size:12px;text-align:center;" oninput="updateCOLine(' + l.id + ',\'pctComplete\',this.value)"></td>' +
       '<td style="padding:6px 4px;"><input type="number" id="co-input-this-' + l.id + '" class="form-input" value="' + (thisClaim !== 0 ? (Math.round(thisClaim*100)/100) : '') + '" step="0.01" style="padding:4px 8px;font-size:12px;text-align:right;font-family:DM Mono,monospace;color:' + tc + ';background:' + tc + '08;" oninput="updateCOLine(' + l.id + ',\'thisClaim\',this.value)"></td>' +
-      '<td style="padding:6px 10px;text-align:right;font-family:DM Mono,monospace;color:var(--muted);">' + (l.prevInvoiced !== 0 ? fmtFull(Math.round(l.prevInvoiced*100)/100) : 'â') + '</td>' +
-      '<td style="padding:6px 10px;text-align:right;font-family:DM Mono,monospace;">' + (completed !== 0 ? fmtFull(Math.round(completed*100)/100) : 'â') + '</td>' +
-      '<td style="padding:6px 4px;white-space:nowrap;"><span style="cursor:pointer;font-size:12px;margin-right:10px;background:var(--accent);color:#000;padding:2px 6px;border-radius:4px;font-weight:700;" onclick="exportCOPDF(' + l.id + ')" title="Export PDF">â¬ PDF</span><span style="cursor:pointer;color:var(--accent2);font-size:14px;" onclick="removeCOLine(' + l.id + ')">â</span></td>' +
+      '<td style="padding:6px 10px;text-align:right;font-family:DM Mono,monospace;color:var(--muted);">' + (l.prevInvoiced !== 0 ? fmtFull(Math.round(l.prevInvoiced*100)/100) : '—') + '</td>' +
+      '<td style="padding:6px 10px;text-align:right;font-family:DM Mono,monospace;">' + (completed !== 0 ? fmtFull(Math.round(completed*100)/100) : '—') + '</td>' +
+      '<td style="padding:6px 4px;white-space:nowrap;"><span style="cursor:pointer;font-size:12px;margin-right:10px;background:var(--accent);color:#000;padding:2px 6px;border-radius:4px;font-weight:700;" onclick="exportCOPDF(' + l.id + ')" title="Export PDF">⬇ PDF</span><span style="cursor:pointer;color:var(--accent2);font-size:14px;" onclick="removeCOLine(' + l.id + ')">✕</span></td>' +
     '</tr>';
   }).join('');
 
@@ -6710,14 +6710,14 @@ function renderClaimLines() {
     var completed = l.value * (l.pctComplete / 100);
     var thisClaim = Math.max(0, completed - l.prevInvoiced);
     return '<tr draggable="true" data-claim-idx="' + i + '" style="border-bottom:1px solid var(--border);cursor:grab;" ondragstart="claimDragStart(event,' + i + ')" ondragover="claimDragOver(event)" ondragenter="claimDragEnter(event)" ondragleave="claimDragLeave(event)" ondrop="claimDrop(event,' + i + ')" ondragend="claimDragEnd(event)">' +
-      '<td style="padding:6px 10px;color:var(--muted);cursor:grab;" title="Drag to reorder">â° ' + (i+1) + '</td>' +
+      '<td style="padding:6px 10px;color:var(--muted);cursor:grab;" title="Drag to reorder">☰ ' + (i+1) + '</td>' +
       '<td style="padding:6px 4px;"><input type="text" class="form-input" value="' + l.desc.replace(/"/g,'&quot;') + '" style="padding:4px 8px;font-size:12px;" oninput="updateClaimLine(' + l.id + ',\'desc\',this.value)"></td>' +
       '<td style="padding:6px 4px;"><input type="number" class="form-input" value="' + (l.value||'') + '" step="0.01" style="padding:4px 8px;font-size:12px;text-align:right;font-family:DM Mono,monospace;" oninput="updateClaimLine(' + l.id + ',\'value\',this.value)"></td>' +
       '<td style="padding:6px 4px;"><input type="number" class="form-input" value="' + (l.pctComplete||'') + '" min="0" max="100" step="1" style="padding:4px 8px;font-size:12px;text-align:center;" oninput="updateClaimLine(' + l.id + ',\'pctComplete\',this.value)"></td>' +
       '<td style="padding:6px 4px;"><input type="number" id="claim-input-this-' + l.id + '" class="form-input" value="' + (thisClaim > 0 ? (Math.round(thisClaim*100)/100) : '') + '" step="0.01" style="padding:4px 8px;font-size:12px;text-align:right;font-family:DM Mono,monospace;color:var(--accent);background:rgba(243,156,18,0.08);" oninput="updateClaimLine(' + l.id + ',\'thisClaim\',this.value)"></td>' +
-      '<td id="claim-calc-prev-' + l.id + '" style="padding:6px 10px;text-align:right;font-family:DM Mono,monospace;color:var(--muted);">' + (l.prevInvoiced > 0 ? fmtFull(Math.round(l.prevInvoiced*100)/100) : 'â') + '</td>' +
-      '<td id="claim-calc-date-' + l.id + '" style="padding:6px 10px;text-align:right;font-family:DM Mono,monospace;">' + (completed > 0 ? fmtFull(Math.round(completed*100)/100) : 'â') + '</td>' +
-      '<td style="padding:6px 4px;"><span style="cursor:pointer;color:var(--accent2);font-size:14px;" onclick="removeClaimLine(' + l.id + ')">â</span></td>' +
+      '<td id="claim-calc-prev-' + l.id + '" style="padding:6px 10px;text-align:right;font-family:DM Mono,monospace;color:var(--muted);">' + (l.prevInvoiced > 0 ? fmtFull(Math.round(l.prevInvoiced*100)/100) : '—') + '</td>' +
+      '<td id="claim-calc-date-' + l.id + '" style="padding:6px 10px;text-align:right;font-family:DM Mono,monospace;">' + (completed > 0 ? fmtFull(Math.round(completed*100)/100) : '—') + '</td>' +
+      '<td style="padding:6px 4px;"><span style="cursor:pointer;color:var(--accent2);font-size:14px;" onclick="removeClaimLine(' + l.id + ')">✕</span></td>' +
     '</tr>';
   }).join('');
 }
@@ -6798,8 +6798,8 @@ function updateClaimPreview() {
     var thisClaim = Math.max(0, completed - l.prevInvoiced);
     var rowPrev = document.getElementById('claim-calc-prev-' + l.id);
     var rowDate = document.getElementById('claim-calc-date-' + l.id);
-    if (rowPrev) rowPrev.textContent = l.prevInvoiced > 0 ? fmtFull(Math.round(l.prevInvoiced*100)/100) : 'â';
-    if (rowDate) rowDate.textContent = completed > 0 ? fmtFull(Math.round(completed*100)/100) : 'â';
+    if (rowPrev) rowPrev.textContent = l.prevInvoiced > 0 ? fmtFull(Math.round(l.prevInvoiced*100)/100) : '—';
+    if (rowDate) rowDate.textContent = completed > 0 ? fmtFull(Math.round(completed*100)/100) : '—';
   });
   
   // Totals footer (original SOV only)
@@ -6972,7 +6972,7 @@ function exportClaimPDF() {
         (myCompany.logoDataUrl ? '<img src="' + myCompany.logoDataUrl + '" style="height:44px;object-fit:contain;">' : '') +
         '<div>' +
           '<div class="company-name">' + (myCompany.name || '') + '</div>' +
-          '<div class="company-details">' + (myCompany.address || '') + (myCompany.phone ? '  â¢  ' + myCompany.phone : '') + (myCompany.email ? '  â¢  ' + myCompany.email : '') + '</div>' +
+          '<div class="company-details">' + (myCompany.address || '') + (myCompany.phone ? '  •  ' + myCompany.phone : '') + (myCompany.email ? '  •  ' + myCompany.email : '') + '</div>' +
         '</div>' +
       '</div>' +
       '<div style="text-align:right;">' +
@@ -7019,7 +7019,7 @@ function exportClaimPDF() {
     '</tr></thead>' +
     '<tbody>' + lineRows + '</tbody>' +
     '<tfoot><tr class="subtotal-row">' +
-      '<td style="text-align:center;">â</td>' +
+      '<td style="text-align:center;">—</td>' +
       '<td style="font-size:9pt;">Original Contract Sub-total</td>' +
       '<td style="text-align:right;font-family:\'Courier New\',monospace;">' + fmt$(totalValue) + '</td>' +
       '<td style="text-align:center;">100.00%</td>' +
@@ -7029,7 +7029,7 @@ function exportClaimPDF() {
       '<td style="text-align:right;font-family:\'Courier New\',monospace;">' + fmt$(totalToDate) + '</td>' +
     '</tr></tfoot></table>' +
 
-    // Summary boxes â original contract only
+    // Summary boxes — original contract only
     '<div class="summary-grid">' +
       '<div class="summary-box">' +
         '<div class="summary-label">Total This Claim</div>' +
@@ -7048,7 +7048,7 @@ function exportClaimPDF() {
     // Footer
     '<div class="footer-row">' +
       '<span>' + (myCompany.name || '') + '</span>' +
-      '<span>Claim #' + claimNum + ' â ' + project + '</span>' +
+      '<span>Claim #' + claimNum + ' — ' + project + '</span>' +
       '<span>Generated ' + new Date().toLocaleDateString('en-CA', {year:'numeric',month:'long',day:'numeric'}) + '</span>' +
     '</div>' +
 
@@ -7058,8 +7058,8 @@ function exportClaimPDF() {
   var blob = new Blob([html], { type: 'text/html' });
   var url = URL.createObjectURL(blob);
   var w = window.open(url, '_blank');
-  if (w) showToast('Print dialog opening â choose "Save as PDF"');
-  else showToast('Popup blocked â please allow popups');
+  if (w) showToast('Print dialog opening — choose "Save as PDF"');
+  else showToast('Popup blocked — please allow popups');
 }
 
 // Export individual CO as its own SOV PDF
@@ -7126,7 +7126,7 @@ function exportCOPDF(coId) {
       '<div class="header-left">' +
         (myCompany.logoDataUrl ? '<img src="' + myCompany.logoDataUrl + '" style="height:44px;object-fit:contain;">' : '') +
         '<div><div class="company-name">' + (myCompany.name || '') + '</div>' +
-        '<div class="company-details">' + (myCompany.address || '') + (myCompany.phone ? '  â¢  ' + myCompany.phone : '') + (myCompany.email ? '  â¢  ' + myCompany.email : '') + '</div></div>' +
+        '<div class="company-details">' + (myCompany.address || '') + (myCompany.phone ? '  •  ' + myCompany.phone : '') + (myCompany.email ? '  •  ' + myCompany.email : '') + '</div></div>' +
       '</div>' +
       '<div style="text-align:right;">' +
         '<div style="font-size:20pt;font-weight:700;line-height:1;font-family:\'Courier New\',monospace;">' + ref + '</div>' +
@@ -7134,7 +7134,7 @@ function exportCOPDF(coId) {
       '</div>' +
     '</div>' +
     
-    '<div class="title-bar">' + typeLabel + ' â Progress Claim</div>' +
+    '<div class="title-bar">' + typeLabel + ' — Progress Claim</div>' +
     
     '<div class="info-grid">' +
       '<div class="info-left">' +
@@ -7175,7 +7175,7 @@ function exportCOPDF(coId) {
       '<td style="border:1px solid #d0d0d0;padding:7px 10px;text-align:right;font-family:\'Courier New\',monospace;font-size:9pt;">' + (completed !== 0 ? fmt$(Math.abs(completed)) : '-') + '</td>' +
     '</tr></tbody>' +
     '<tfoot><tr class="subtotal-row">' +
-      '<td style="text-align:center;">â</td><td>Total</td>' +
+      '<td style="text-align:center;">—</td><td>Total</td>' +
       '<td style="text-align:right;font-family:\'Courier New\',monospace;">' + (isNeg ? '(' + fmt$(sv) + ')' : fmt$(sv)) + '</td>' +
       '<td style="text-align:center;">' + l.pctComplete.toFixed(2) + '%</td>' +
       '<td style="text-align:right;font-family:\'Courier New\',monospace;">' + (thisClaim !== 0 ? (thisClaim < 0 ? '(' + fmt$(thisClaim) + ')' : fmt$(thisClaim)) : '-') + '</td>' +
@@ -7197,7 +7197,7 @@ function exportCOPDF(coId) {
     
     '<div class="footer-row">' +
       '<span>' + (myCompany.name || '') + '</span>' +
-      '<span>' + ref + ' â ' + project + ' â re: Claim #' + claimNum + '</span>' +
+      '<span>' + ref + ' — ' + project + ' — re: Claim #' + claimNum + '</span>' +
       '<span>Generated ' + new Date().toLocaleDateString('en-CA', {year:'numeric',month:'long',day:'numeric'}) + '</span>' +
     '</div>' +
     
@@ -7206,8 +7206,8 @@ function exportCOPDF(coId) {
   var blob = new Blob([html], { type: 'text/html' });
   var url = URL.createObjectURL(blob);
   var w = window.open(url, '_blank');
-  if (w) showToast(ref + ' â Print dialog opening');
-  else showToast('Popup blocked â please allow popups');
+  if (w) showToast(ref + ' — Print dialog opening');
+  else showToast('Popup blocked — please allow popups');
 }
 
 // Legacy alias
@@ -7219,7 +7219,7 @@ function printProposal() { exportProposalPDF(); }
 // ============ TOAST ============
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = 'â  ' + msg;
+  t.textContent = '✓  ' + msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2800);
 }
