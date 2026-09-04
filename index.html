@@ -1209,14 +1209,23 @@
       <div class="nav-item" onclick="showPage('analytics')">
         <span class="nav-icon">📈</span> Analytics
       </div>
-      <div class="nav-item" onclick="showPage('billing')">
-        <span class="nav-icon">💰</span> Progress Billing
-      </div>
+      <!-- Job costing lives in a separate Next app that reads this same
+           database. It is not hosted yet, so this only appears when the page is
+           being served from the same place that app runs. A menu item that goes
+           nowhere is worse than no menu item. -->
+      <a id="nav-budget" class="nav-item" href="/" hidden
+         style="display:none;text-decoration:none;color:inherit;">
+        <span class="nav-icon">🧮</span> Budget
+      </a>
+      <script>
+        (function () {
+          var local = ['localhost', '127.0.0.1'].indexOf(location.hostname) !== -1;
+          var el = document.getElementById('nav-budget');
+          if (local && el) { el.hidden = false; el.style.display = 'block'; }
+        })();
+      </script>
       <div class="nav-item" onclick="showPage('resi')">
         <span class="nav-icon">🏠</span> Resi Schedule
-      </div>
-      <div class="nav-item" onclick="showPage('equipment')">
-        <span class="nav-icon">🏗️</span> Equipment
       </div>
       <div class="nav-item" onclick="openMyCompanyModal()">
         <span class="nav-icon">🏗️</span> My Company
@@ -7287,8 +7296,8 @@ function setupSupabase() {
 // ============================
 // SUPABASE CONFIG
 // ============================
-const SUPABASE_URL = 'https://eymrvlmmmhnvjfaiyxeo.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV5bXJ2bG1tbWhudmpmYWl5eGVvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5Nzc2NzksImV4cCI6MjA4NzU1MzY3OX0.sVbk5jcXmfSETl-nh-lsYMXoi0bLuq3pV1PB_Q763Y4';
+const SUPABASE_URL = 'https://fltemuuqkumnniqipgin.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZsdGVtdXVxa3Vtbm5pcWlwZ2luIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2OTY5ODksImV4cCI6MjEwMzI3Mjk4OX0.AhLFxyXaqbb7EdsGi7eODTwHLgbeM6eyPE9yns7WCtA';
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 window._supabase = supabase;
 let currentUser = null;
